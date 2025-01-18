@@ -2,6 +2,8 @@ import { Bot } from 'mineflayer';
 import Action from './Action';
 import { Item } from 'prismarine-item';
 import { Recipe, RecipeItem } from 'prismarine-recipe';
+import Collect from './Collect';
+import { getItemIdByName, getItemNameById } from '../botHelper';
 
 export default class Craft implements Action {
   private itemName: string;
@@ -10,7 +12,7 @@ export default class Craft implements Action {
     this.itemName = itemName;
   }
 
-  public getMissingDependencies(bot: Bot): Action[] {
+  getMissingDependencies(bot: Bot): Action[] {
     const recipes = getRecipes(bot, this.itemName);
 
     const isAnyRecipeCraftable = recipes.filter(
@@ -28,11 +30,15 @@ export default class Craft implements Action {
         return !isIngredientInInventory(inventoryItems, ingredient);
       })
       .map(
-        ingrdient => new Craft(getItemNameById(bot, ingrdient.id))
+        ingrdient => getAction(bot, ingrdient)
       );
   }
 
-  public startAction(bot: Bot): void {
+  isInProgress(): boolean {
+    return false;
+  }
+
+  startAction(bot: Bot): void {
     const recipes = getRecipes(bot, this.itemName);
 
     const recipe = recipes.filter(
@@ -43,10 +49,10 @@ export default class Craft implements Action {
     bot.chat(`Crafting ${this.itemName}`);
   }
 
-  public cancelAction(_: Bot): void { }
+  cancelAction(_: Bot): void { }
 }
 
-function getRecipes(bot: Bot, itemName: string) {
+function getRecipes(bot: Bot, itemName: string): Recipe[] {
   const itemId = getItemIdByName(bot, itemName);
 
   const craftingTable = false;
@@ -70,10 +76,12 @@ function isIngredientInInventory(inventoryItems: Item[], ingredient: RecipeItem)
   ).length > 0;
 }
 
-function getItemIdByName(bot: Bot, itemName: string): number {
-  return bot.registry.itemsByName[itemName].id;
-}
+function getAction(bot: Bot, ingrdient: RecipeItem): Action {
+  const itemName = getItemNameById(bot, ingrdient.id);
 
-function getItemNameById(bot: Bot, itemId: number): string {
-  return bot.registry.items[itemId].name;
+  if (getRecipes(bot, itemName).length > 0) {
+    return new Craft(itemName);
+  }
+
+  return new Collect(itemName);
 }
