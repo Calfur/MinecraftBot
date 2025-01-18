@@ -1,8 +1,21 @@
-import Bot from "./Bot";
-import { Vec3 } from "vec3";
-import BotState from "./Botstate";
+import { createBot } from "mineflayer";
+import Action from "./Actions/Action";
+import Craft from "./Actions/Craft";
 
-const steve = new Bot("steve");
-steve.goals.push([1,(botState: BotState) => {
-    return 1/botState.bot.entity.position.distanceTo(new Vec3(0,0,0))
-}]);
+const targetActions: Action[] = [
+  new Craft('orange_dye'),
+]
+
+const hugo = createBot({
+  username: 'Hugo',
+})
+
+targetActions.forEach(action => {
+  hugo.on('physicTick', () => {
+    const missingDependencies = action.getMissingDependencies(hugo);
+
+    if (missingDependencies.length === 0) {
+      action.startAction(hugo);
+    }
+  })
+})
