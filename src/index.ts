@@ -3,7 +3,7 @@ import Action from "./Actions/Action";
 import Craft from "./Actions/Craft";
 
 const targetActions: Action[] = [
-  new Craft('orange_dye'),
+  new Craft('torch'),
 ]
 
 var actionInProgress: Action | null;
@@ -13,9 +13,13 @@ const hugo = createBot({
 })
 
 hugo.on('physicTick', () => {
+  if (!actionInProgress?.isInProgress()) {
+    actionInProgress = null;
+  }
+
   const startableActions = targetActions.flatMap(a => getStartableActions(a));
 
-  if (!actionInProgress?.isInProgress() && startableActions.length > 0) {
+  if (actionInProgress === null && startableActions.length > 0) {
     startableActions[0].startAction(hugo);
     actionInProgress = startableActions[0];
   }

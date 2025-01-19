@@ -23,15 +23,13 @@ export default class Craft implements Action {
       return [];
     }
 
-    return recipes[0].ingredients
-      .filter(ingredient => {
-        const inventoryItems = bot.inventory.items();
+    const inventoryItems = bot.inventory.items();
+    const missingItems = getRequiredItemsToCraft(recipes[0])
+      .filter(recipeItem => !isRecipeItemInInventory(inventoryItems, recipeItem));
 
-        return !isIngredientInInventory(inventoryItems, ingredient);
-      })
-      .map(
-        ingrdient => getAction(bot, ingrdient)
-      );
+    return missingItems.map(
+      ingrdient => getAction(bot, ingrdient)
+    );
   }
 
   isInProgress(): boolean {
@@ -64,15 +62,17 @@ function getRecipes(bot: Bot, itemName: string): Recipe[] {
 function isRecipeCraftable(bot: Bot, recipe: Recipe): boolean {
   const inventoryItems = bot.inventory.items();
 
-  return recipe.ingredients.every(
-    ingredient => isIngredientInInventory(inventoryItems, ingredient)
-  );
+  return getRequiredItemsToCraft(recipe)
+    .every(
+      recipeItem => isRecipeItemInInventory(inventoryItems, recipeItem)
+    );
 }
 
-function isIngredientInInventory(inventoryItems: Item[], ingredient: RecipeItem): boolean {
+function isRecipeItemInInventory(inventoryItems: Item[], recipeItem: RecipeItem): boolean {
   return inventoryItems.filter(
-    inventoryItem => inventoryItem.type === ingredient.id &&
-      inventoryItem.count >= ingredient.count
+    inventoryItem => 
+      inventoryItem.type === recipeItem.id &&
+      inventoryItem.count >= recipeItem.count
   ).length > 0;
 }
 
@@ -84,4 +84,9 @@ function getAction(bot: Bot, ingrdient: RecipeItem): Action {
   }
 
   return new Collect(itemName);
+}
+
+function getRequiredItemsToCraft(recipe: Recipe): RecipeItem[] {
+  return recipe.delta
+    .filter(d => d.count < 0);
 }

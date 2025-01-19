@@ -11,7 +11,7 @@ export default class Collect implements Action {
     this.itemName = itemName;
   }
 
-  getMissingDependencies(bot: Bot): Action[] {
+  getMissingDependencies(_: Bot): Action[] {
     return [];
   }
 
