@@ -1,36 +1,68 @@
 import { createBot } from "mineflayer";
 import Action from "./Actions/Action";
-import Craft from "./Actions/Craft";
+import Target from "./Targets/Target";
+import GetItem from "./Targets/GetItem";
 
-const targetActions: Action[] = [
-  new Craft('torch'),
-]
-
-var actionInProgress: Action | null;
-
-const hugo = createBot({
+const initialTargets: Target[] = [
+  new GetItem('orange_dye'),
+  new GetItem('torch'),
+];
+const bot = createBot({
   username: 'Hugo',
 })
 
-hugo.on('physicTick', () => {
+var isInitialized = false;
+var remainingTargets: Target[];
+var actionInProgress: Action | null;
+
+bot.on('spawn', () => {
+  if (!isInitialized) {
+    initializeBot();
+  }
+});
+
+bot.on('physicTick', () => {
+  remainingTargets = remainingTargets.filter(t => !t.isCompleted());
+
   if (!actionInProgress?.isInProgress()) {
     actionInProgress = null;
   }
 
-  const startableActions = targetActions.flatMap(a => getStartableActions(a));
+  const startableActions = getStartableActionsForTargets(remainingTargets);
 
-  if (actionInProgress === null && startableActions.length > 0) {
-    startableActions[0].startAction(hugo);
-    actionInProgress = startableActions[0];
+  if (startableActions.length > 0) {
+    const priorizedAction = startableActions[0];
+
+    if (actionInProgress === null || actionInProgress.getKey() !== priorizedAction.getKey()) {
+      actionInProgress?.cancelAction(bot);
+      priorizedAction.startAction(bot);
+      actionInProgress = priorizedAction;
+    }
   }
 })
 
+function initializeBot() {
+  remainingTargets = initialTargets;
+
+  remainingTargets.forEach(t => {
+    t.attatchCompletedListener(bot);
+  });
+
+  isInitialized = true;
+}
+
+function getStartableActionsForTargets(targets: Target[]): Action[] {
+  return targets
+    .flatMap(t => t.getActions(bot))
+    .flatMap(a => getStartableActions(a));
+}
+
 function getStartableActions(action: Action): Action[] {
-  const missingDependencies = action.getMissingDependencies(hugo);
+  const missingDependencies = action.getMissingDependencies(bot);
 
   if (missingDependencies.length === 0) {
     return [action];
   }
 
-  return missingDependencies.flatMap(getStartableActions);
+  return getStartableActionsForTargets(missingDependencies);
 }

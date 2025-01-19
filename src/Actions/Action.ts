@@ -1,7 +1,9 @@
 import { Bot } from "mineflayer";
+import Target from "../Targets/Target";
 
 export default interface Action {
-  getMissingDependencies(bot: Bot): Action[];
+  getKey(): string;
+  getMissingDependencies(bot: Bot): Target[];
   startAction(bot: Bot): void;
   cancelAction(bot: Bot): void;
   isInProgress(): boolean;

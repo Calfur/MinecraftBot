@@ -2,16 +2,23 @@ import { Bot } from "mineflayer";
 import Action from "./Action";
 import { Entity } from 'prismarine-entity'
 import { getItemNameById } from "../botHelper";
+import Target from "../Targets/Target";
 
 export default class Collect implements Action {
   private itemName: string;
   private inProgress = false;
 
-  constructor(itemName: string) {
+  constructor(
+    itemName: string
+  ) {
     this.itemName = itemName;
   }
 
-  getMissingDependencies(_: Bot): Action[] {
+  getKey(): string {
+    return `Collect:${this.itemName}`;
+  }
+
+  getMissingDependencies(_: Bot): Target[] {
     return [];
   }
 
