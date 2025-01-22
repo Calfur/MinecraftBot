@@ -7,72 +7,68 @@ import Target from '../Targets/Target';
 import GetItem from '../Targets/GetItem';
 
 export default class Craft implements Action {
-  private itemName: string;
+  private recipe: Recipe;
+  private inProgress = false;
 
   constructor(
-    itemName: string
+    recipe: Recipe
   ) {
-    this.itemName = itemName;
+    this.recipe = recipe;
   }
 
   getKey(): string {
-    return `Craft:${this.itemName}`;
+    return `Craft:${this.recipe.result.id}`;
   }
 
   getMissingDependencies(bot: Bot): Target[] {
-    const recipes = getRecipes(bot, this.itemName);
+    const inventoryItems = bot.inventory.items();
+    const missingItems = getRequiredItemsToCraft(this.recipe)
+      .filter(recipeItem => !isRecipeItemInInventory(inventoryItems, recipeItem));
 
-    const isAnyRecipeCraftable = recipes.filter(
-      recipe => isRecipeCraftable(bot, recipe)
-    ).length > 0;
+    if (missingItems.length !== 0) {
+      return missingItems.map(
+        ingrdient => new GetItem(getItemNameById(bot, ingrdient.id))
+      );
+    }
 
-    if (isAnyRecipeCraftable) {
+    if (this.recipe.requiresTable) {
+      const craftingTable = getCraftingTable(bot);
+
+      if (!craftingTable) {
+        throw new Error('No nearby crafting table found');
+        // ToDo add nearby crafting table target
+      }
+
       return [];
     }
 
-    const inventoryItems = bot.inventory.items();
-    const missingItems = getRequiredItemsToCraft(recipes[0])
-      .filter(recipeItem => !isRecipeItemInInventory(inventoryItems, recipeItem));
-
-    return missingItems.map(
-      ingrdient => new GetItem(getItemNameById(bot, ingrdient.id))
-    );
-  }
-
-  isInProgress(): boolean {
-    return false;
+    return [];
   }
 
   startAction(bot: Bot): void {
-    const recipes = getRecipes(bot, this.itemName);
+    this.inProgress = true;
+    bot.chat(`Crafting ${getItemNameById(bot, this.recipe.result.id)}`);
 
-    const recipe = recipes.filter(
-      recipe => isRecipeCraftable(bot, recipe)
-    )[0];
-
-    bot.chat(`Crafting ${this.itemName}`);
-    bot.craft(recipe, 1);
+    const craftingTable = getCraftingTable(bot);
+    bot.craft(this.recipe, 1, craftingTable).then(() => {
+      this.inProgress = false;
+    });
   }
 
   cancelAction(_: Bot): void { }
+
+  isInProgress(): boolean {
+    return this.inProgress;
+  }
 
   getEffort(): number {
     return 0;
   }
 }
 
-function isRecipeCraftable(bot: Bot, recipe: Recipe): boolean {
-  const inventoryItems = bot.inventory.items();
-
-  return getRequiredItemsToCraft(recipe)
-    .every(
-      recipeItem => isRecipeItemInInventory(inventoryItems, recipeItem)
-    );
-}
-
 function isRecipeItemInInventory(inventoryItems: Item[], recipeItem: RecipeItem): boolean {
   return inventoryItems.filter(
-    inventoryItem => 
+    inventoryItem =>
       inventoryItem.type === recipeItem.id &&
       inventoryItem.count >= Math.abs(recipeItem.count)
   ).length > 0;
@@ -81,4 +77,11 @@ function isRecipeItemInInventory(inventoryItems: Item[], recipeItem: RecipeItem)
 function getRequiredItemsToCraft(recipe: Recipe): RecipeItem[] {
   return recipe.delta
     .filter(d => d.count < 0);
+}
+
+function getCraftingTable(bot: Bot) {
+  return bot.findBlock({
+    matching: block => block.name.includes('crafting_table'),
+    maxDistance: 6
+  }) ?? undefined;
 }

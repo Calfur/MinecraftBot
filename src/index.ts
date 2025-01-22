@@ -4,7 +4,7 @@ import Hugo from "./Hugo";
 
 const initialTargets: Target[] = [
   new GetItem('orange_dye'),
-  new GetItem('torch'),
+  new GetItem('coal_block'),
 ];
 
 const hugo = new Hugo(initialTargets);

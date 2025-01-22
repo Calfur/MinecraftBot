@@ -12,7 +12,7 @@ export function getItemNameById(bot: Bot, itemId: number): string {
 export function getRecipes(bot: Bot, itemName: string): Recipe[] {
   const itemId = getItemIdByName(bot, itemName);
 
-  const craftingTable = false;
+  const craftingTable = true;
   const recipes = bot.recipesAll(itemId, null, craftingTable);
 
   return recipes.filter(recipe => recipe.result.id === itemId);

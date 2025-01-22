@@ -34,9 +34,10 @@ export default class GetItem implements Target {
   getActions(bot: Bot): Action[] {
     const possibleActions: Action[] = [];
 
-    if (getRecipes(bot, this.itemName).length > 0) {
-      possibleActions.push(new Craft(this.itemName));
-    }
+    const recipes = getRecipes(bot, this.itemName);
+    recipes.forEach(recipe => {
+      possibleActions.push(new Craft(recipe));
+    });
   
     possibleActions.push(new Collect(this.itemName));
 
