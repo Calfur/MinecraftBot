@@ -50,7 +50,7 @@ export default class Hugo {
       const startableActions = getStartableActionsForTargets(this.bot, this.remainingTargets);
 
       if (startableActions.length > 0) {
-        const priorizedAction = startableActions[0];
+        const priorizedAction = startableActions.sort((a, b) => a.getEffort() - b.getEffort())[0];
 
         if (this.actionInProgress === null || this.actionInProgress.getKey() !== priorizedAction.getKey()) {
           this.actionInProgress?.cancelAction(this.bot);

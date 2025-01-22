@@ -7,4 +7,5 @@ export default interface Action {
   startAction(bot: Bot): void;
   cancelAction(bot: Bot): void;
   isInProgress(): boolean;
+  getEffort(): number;
 }

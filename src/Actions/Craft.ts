@@ -55,6 +55,10 @@ export default class Craft implements Action {
   }
 
   cancelAction(_: Bot): void { }
+
+  getEffort(): number {
+    return 0;
+  }
 }
 
 function isRecipeCraftable(bot: Bot, recipe: Recipe): boolean {

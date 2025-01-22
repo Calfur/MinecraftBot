@@ -50,4 +50,8 @@ export default class Collect implements Action {
     this.inProgress = false;
     bot.chat(`Canceled collecting ${this.itemName}`);
   }
+
+  getEffort(): number {
+    return 1;
+  }
 }
