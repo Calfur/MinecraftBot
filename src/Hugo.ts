@@ -72,18 +72,19 @@ export default class Hugo {
   }
 }
 
-function getStartableActionsForTargets(bot: Bot, targets: Target[]): Action[] {
+function getStartableActionsForTargets(bot: Bot, targets: Target[], blockedActions?: string[]): Action[] {
   return targets
-    .flatMap(t => t.getActions(bot))
-    .flatMap(a => getStartableActions(bot, a));
+    .flatMap(target => target.getActions(bot))
+    .filter(action => !blockedActions?.includes(action.getKey()))
+    .flatMap(action => getStartableActions(bot, action, blockedActions));
 }
 
-function getStartableActions(bot: Bot, action: Action): Action[] {
+function getStartableActions(bot: Bot, action: Action, blockedActions: string[] = []): Action[] {
   const missingDependencies = action.getMissingDependencies(bot);
 
   if (missingDependencies.length === 0) {
     return [action];
   }
 
-  return getStartableActionsForTargets(bot, missingDependencies);
+  return getStartableActionsForTargets(bot, missingDependencies, [...blockedActions, action.getKey()]);
 }

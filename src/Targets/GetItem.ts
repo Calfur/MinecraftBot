@@ -32,10 +32,14 @@ export default class GetItem implements Target {
   }
 
   getActions(bot: Bot): Action[] {
+    const possibleActions: Action[] = [];
+
     if (getRecipes(bot, this.itemName).length > 0) {
-      return [new Craft(this.itemName)];
+      possibleActions.push(new Craft(this.itemName));
     }
   
-    return [new Collect(this.itemName)];
+    possibleActions.push(new Collect(this.itemName));
+
+    return possibleActions;
   }
 }
