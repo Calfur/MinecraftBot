@@ -7,6 +7,7 @@ export default class Hugo {
   private isInitialized = false;
   private remainingTargets?: Target[];
   private actionInProgress?: Action | null;
+  private isCompletedMessageSent = false;
 
   constructor(targets: Target[]) {
     this.bot = createBot({
@@ -26,6 +27,17 @@ export default class Hugo {
 
       this.remainingTargets = this.remainingTargets.filter(t => !t.isCompleted());
 
+      if (this.remainingTargets.length === 0) {
+        if (!this.isCompletedMessageSent) {
+          this.bot.chat("☑ All targets completed! ☑");
+          this.isCompletedMessageSent = true;
+        }
+
+        return;
+      }
+
+      this.isCompletedMessageSent = false;
+
       if (!this.actionInProgress?.isInProgress()) {
         this.actionInProgress = null;
       }
@@ -41,7 +53,7 @@ export default class Hugo {
           this.actionInProgress = priorizedAction;
         }
       }
-    })
+    });
   }
 
   private initializeBot(targets: Target[]) {
