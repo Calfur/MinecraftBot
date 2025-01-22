@@ -1,6 +1,7 @@
 import { Bot, createBot } from "mineflayer";
 import Target from "./Targets/Target";
 import Action from "./Actions/Action";
+import TpsScoreboard from "./TpsScoreboard";
 
 export default class Hugo {
   private bot: Bot;
@@ -8,6 +9,7 @@ export default class Hugo {
   private remainingTargets?: Target[];
   private actionInProgress?: Action | null;
   private isCompletedMessageSent = false;
+  private tpsScoreboard?: TpsScoreboard;
 
   constructor(targets: Target[]) {
     this.bot = createBot({
@@ -17,10 +19,13 @@ export default class Hugo {
     this.bot.on('spawn', () => {
       if (!this.isInitialized) {
         this.initializeBot(targets);
+        this.tpsScoreboard = new TpsScoreboard(this.bot);
       }
     });
 
     this.bot.on('physicTick', () => {
+      this.tpsScoreboard?.tick();
+
       if (!this.isInitialized || !this.remainingTargets) {
         return;
       }
