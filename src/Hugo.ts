@@ -11,6 +11,7 @@ export default class Hugo {
   private actionInProgress?: Action | null;
   private isCompletedMessageSent = false;
   private tpsScoreboard?: TpsScoreboard;
+  private tickCounter = 0;
 
   constructor(targets: Target[]) {
     this.bot = createBot({
@@ -30,6 +31,11 @@ export default class Hugo {
       this.tpsScoreboard?.tick();
 
       if (!this.isInitialized || !this.remainingTargets) {
+        return;
+      }
+
+      this.tickCounter++;
+      if (this.tickCounter % 20 !== 0) {
         return;
       }
 
