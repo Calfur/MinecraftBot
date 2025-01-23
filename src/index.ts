@@ -1,10 +1,10 @@
 import Target from "./Targets/Target";
-import GetItem from "./Targets/GetItem";
+import OwnItem from "./Targets/OwnItem";
 import Hugo from "./Hugo";
 
 const initialTargets: Target[] = [
-  new GetItem('orange_dye'),
-  new GetItem('coal_block'),
+  new OwnItem('orange_dye'),
+  new OwnItem('coal_block'),
 ];
 
 const hugo = new Hugo(initialTargets);

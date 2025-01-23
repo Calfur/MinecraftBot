@@ -4,7 +4,8 @@ import { Item } from 'prismarine-item';
 import { Recipe, RecipeItem } from 'prismarine-recipe';
 import { getItemNameById, getRecipes } from '../botHelper';
 import Target from '../Targets/Target';
-import GetItem from '../Targets/GetItem';
+import OwnItem from '../Targets/OwnItem';
+import BeNearBlock from '../Targets/BeNearBlock';
 
 export default class Craft implements Action {
   private recipe: Recipe;
@@ -27,7 +28,7 @@ export default class Craft implements Action {
 
     if (missingItems.length !== 0) {
       return missingItems.map(
-        ingrdient => new GetItem(getItemNameById(bot, ingrdient.id))
+        ingrdient => new OwnItem(getItemNameById(bot, ingrdient.id))
       );
     }
 
@@ -35,11 +36,8 @@ export default class Craft implements Action {
       const craftingTable = getCraftingTable(bot);
 
       if (!craftingTable) {
-        throw new Error('No nearby crafting table found');
-        // ToDo add nearby crafting table target
+        return [new BeNearBlock('crafting_table')];
       }
-
-      return [];
     }
 
     return [];
@@ -55,13 +53,15 @@ export default class Craft implements Action {
     });
   }
 
-  cancelAction(_: Bot): void { }
+  cancelAction(bot: Bot): void {
+    bot.chat(`Canceled crafting ${getItemNameById(bot, this.recipe.result.id)}`);
+  }
 
   isInProgress(): boolean {
     return this.inProgress;
   }
 
-  getEffort(): number {
+  getEffort(bot: Bot): number {
     return 0;
   }
 }
@@ -82,6 +82,6 @@ function getRequiredItemsToCraft(recipe: Recipe): RecipeItem[] {
 function getCraftingTable(bot: Bot) {
   return bot.findBlock({
     matching: block => block.name.includes('crafting_table'),
-    maxDistance: 6
+    maxDistance: 3
   }) ?? undefined;
 }

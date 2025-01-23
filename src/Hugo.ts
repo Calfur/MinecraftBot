@@ -1,4 +1,5 @@
 import { Bot, createBot } from "mineflayer";
+import { pathfinder } from "mineflayer-pathfinder";
 import Target from "./Targets/Target";
 import Action from "./Actions/Action";
 import TpsScoreboard from "./TpsScoreboard";
@@ -16,6 +17,8 @@ export default class Hugo {
       username: 'Hugo',
     })
 
+    this.bot.loadPlugin(pathfinder)
+
     this.bot.on('spawn', () => {
       if (!this.isInitialized) {
         this.initializeBot(targets);
@@ -30,7 +33,7 @@ export default class Hugo {
         return;
       }
 
-      this.remainingTargets = this.remainingTargets.filter(t => !t.isCompleted());
+      this.remainingTargets = this.remainingTargets.filter(t => !t.isCompleted(this.bot));
 
       if (this.remainingTargets.length === 0) {
         if (!this.isCompletedMessageSent) {
@@ -50,7 +53,7 @@ export default class Hugo {
       const startableActions = getStartableActionsForTargets(this.bot, this.remainingTargets);
 
       if (startableActions.length > 0) {
-        const priorizedAction = startableActions.sort((a, b) => a.getEffort() - b.getEffort())[0];
+        const priorizedAction = startableActions.sort((a, b) => a.getEffort(this.bot) - b.getEffort(this.bot))[0];
 
         if (this.actionInProgress === null || this.actionInProgress.getKey() !== priorizedAction.getKey()) {
           this.actionInProgress?.cancelAction(this.bot);
@@ -63,11 +66,6 @@ export default class Hugo {
 
   private initializeBot(targets: Target[]) {
     this.remainingTargets = targets;
-
-    this.remainingTargets.forEach(t => {
-      t.attatchCompletedListener(this.bot);
-    });
-
     this.isInitialized = true;
   }
 }

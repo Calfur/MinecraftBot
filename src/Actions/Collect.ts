@@ -51,7 +51,7 @@ export default class Collect implements Action {
     bot.chat(`Canceled collecting ${this.itemName}`);
   }
 
-  getEffort(): number {
-    return 1;
+  getEffort(bot: Bot): number {
+    return 10000;
   }
 }
