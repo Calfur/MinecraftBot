@@ -22,6 +22,8 @@ export default class Hugo {
 
     this.bot.on('spawn', () => {
       if (!this.isInitialized) {
+        this.bot.chat(`/clear ${this.bot.username}`);
+
         this.initializeBot(targets);
         this.tpsScoreboard = new TpsScoreboard(this.bot);
       }
