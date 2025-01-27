@@ -4,6 +4,7 @@ import Action from "../Actions/Action";
 import Collect from "../Actions/Collect";
 import Craft from "../Actions/Craft";
 import { getRecipes } from "../botHelper";
+import DigBlock from "../Actions/DigBlock";
 
 export default class OwnItem implements Target {
   private itemName: string;
@@ -30,6 +31,8 @@ export default class OwnItem implements Target {
     recipes.forEach(recipe => {
       possibleActions.push(new Craft(recipe));
     });
+
+    possibleActions.push(new DigBlock(this.itemName));
 
     possibleActions.push(new Collect(this.itemName));
 

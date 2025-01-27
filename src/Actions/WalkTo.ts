@@ -3,6 +3,7 @@ import { goals, Movements } from "mineflayer-pathfinder";
 import Target from "../Targets/Target";
 import Action from "./Action";
 import { Vec3 } from "vec3";
+import { vec3ToString } from "../vec3Helper";
 
 const COMPLETED_DISTANCE = 2;
 
@@ -33,6 +34,7 @@ export default class WalkTo implements Action {
   }
 
   cancelAction(bot: Bot): void {
+    this.inProgress = false;
     bot.pathfinder.stop()
     bot.chat(`Canceled walking to ${vec3ToString(this.position)}`);
   }
@@ -46,8 +48,4 @@ export default class WalkTo implements Action {
 
     return distance;
   }
-}
-
-function vec3ToString(position: Vec3): string {
-  return `X${position.x} Y${position.y} Z${position.z}`;
 }
