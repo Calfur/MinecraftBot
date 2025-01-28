@@ -4,6 +4,8 @@ import Target from "./Targets/Target";
 import Action from "./Actions/Action";
 import TpsScoreboard from "./TpsScoreboard";
 
+export const BLOCK_SEARCH_MAX_DISTANCE = 32;
+
 export default class Hugo {
   private bot: Bot;
   private isInitialized = false;
@@ -37,7 +39,6 @@ export default class Hugo {
       }
 
       this.tickCounter++;
-      if (this.tickCounter % 20 !== 0) {
         return;
       }
 

@@ -2,31 +2,29 @@ import { Bot } from "mineflayer";
 import Target from "../Targets/Target";
 import Action from "./Action";
 import BeNearBlock from "../Targets/BeNearBlock";
+import { findBlockByDropItemName } from "../botHelper";
 
-const SEARCH_DISTANCE = 4;
+const MAX_DIG_RANGE = 4;
 
 export default class DigBlock implements Action {
-  private blockName: string;
+  private dropItemName: string;
   private inProgress = false;
 
-  constructor(blockName: string) {
-    this.blockName = blockName;
+  constructor(dropItemName: string) {
+    this.dropItemName = dropItemName;
   }
 
   getKey(): string {
-    return `DigBlock:${this.blockName}`;
+    return `DigBlock:Drops:${this.dropItemName}`;
   }
 
   getMissingDependencies(bot: Bot): Target[] {
     // ToDo - Add tools
 
-    const nearestBlock = bot.findBlock({
-      matching: block => block.name.includes(this.blockName),
-      maxDistance: SEARCH_DISTANCE
-    });
+    const nearestBlock = findBlockByDropItemName(bot, this.dropItemName, MAX_DIG_RANGE);
 
     if (!nearestBlock) {
-      return [new BeNearBlock(this.blockName)];
+      return [new BeNearBlock(this.dropItemName)];
     }
 
     return [];
@@ -34,15 +32,12 @@ export default class DigBlock implements Action {
 
   startAction(bot: Bot): void {
     this.inProgress = true;
-    bot.chat(`Digging block ${this.blockName}`);
+    bot.chat(`Digging block ${this.dropItemName}`);
 
-    const nearestBlock = bot.findBlock({
-      matching: block => block.name.includes(this.blockName),
-      maxDistance: SEARCH_DISTANCE
-    });
+    const nearestBlock = findBlockByDropItemName(bot, this.dropItemName, MAX_DIG_RANGE);
 
     if(!nearestBlock) {
-      throw new Error(`No block found: ${this.blockName}`);
+      throw new Error(`No block found: ${this.dropItemName}`);
     }
 
     bot.dig(nearestBlock).then(() => {
@@ -52,7 +47,7 @@ export default class DigBlock implements Action {
 
   cancelAction(bot: Bot): void {
     bot.stopDigging();
-    bot.chat(`Canceled Digging block ${this.blockName}`);
+    bot.chat(`Canceled Digging block ${this.dropItemName}`);
   }
 
   isInProgress(): boolean {

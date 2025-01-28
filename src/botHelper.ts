@@ -17,3 +17,17 @@ export function getRecipes(bot: Bot, itemName: string): Recipe[] {
 
   return recipes.filter(recipe => recipe.result.id === itemId);
 }
+
+export function findBlockByDropItemName(bot: Bot, itemName: string, maxDistance: number): any {
+  const itemId = getItemIdByName(bot, itemName);
+  const blocks = Object.values(bot.registry.blocks)
+    .filter(block => block.drops?.includes(itemId));
+  const blockIds = blocks.map(block => block.id)
+
+  console.log(`Blocks that drop ${itemName}: ${blocks.map(block => block.name).join(', ')}`);
+
+  return bot.findBlock({
+    matching: blockIds,
+    maxDistance
+  });
+}
