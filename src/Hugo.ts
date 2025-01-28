@@ -39,6 +39,7 @@ export default class Hugo {
       }
 
       this.tickCounter++;
+      if (this.tickCounter % 200 !== 1) {
         return;
       }
 

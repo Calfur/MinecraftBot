@@ -3,7 +3,7 @@ import Target from "./Target";
 import Action from "../Actions/Action";
 import Collect from "../Actions/Collect";
 import Craft from "../Actions/Craft";
-import { getRecipes } from "../botHelper";
+import { getBlocksByDropItemName, getRecipes } from "../botHelper";
 import DigBlock from "../Actions/DigBlock";
 
 export default class OwnItem implements Target {
@@ -32,7 +32,9 @@ export default class OwnItem implements Target {
       possibleActions.push(new Craft(recipe));
     });
 
-    possibleActions.push(new DigBlock(this.itemName));
+    if (getBlocksByDropItemName(bot, this.itemName).length > 0) {
+      possibleActions.push(new DigBlock(this.itemName));
+    }
 
     possibleActions.push(new Collect(this.itemName));
 
