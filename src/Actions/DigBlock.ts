@@ -28,9 +28,11 @@ export default class DigBlock implements Action {
       const requiredToolId = Number(Object.keys(firstBlockWithTools.harvestTools!)[0])
       const requiredToolName = bot.registry.items[requiredToolId].name;
 
-      console.log(`Requires tools to dig block: ${this.dropItemName}, ${requiredToolName}`);
+      if (!bot.inventory.items().some(item => item.name === requiredToolName)) {
+        console.log(`Requires tools to dig block: ${this.dropItemName}, ${requiredToolName}`);
 
-      return [new OwnItem(requiredToolName)];
+        return [new OwnItem(requiredToolName)];
+      }
     }
 
     const nearestBlock = findBlockByDropItemName(bot, this.dropItemName, MAX_DIG_RANGE);
@@ -60,7 +62,7 @@ export default class DigBlock implements Action {
           await bot.equip(tool, 'hand');
         }
         await bot.dig(nearestBlock);
-        bot.chat(`Successfully dug ${this.dropItemName}`);
+        bot.chat(`Successfully dug block which drops ${this.dropItemName}`);
       } catch (e) {
         console.error(e);
         bot.chat(`Exception while digging block which drops ${this.dropItemName}`);
@@ -68,7 +70,7 @@ export default class DigBlock implements Action {
         this.inProgress = false;
       }
     };
-  
+
     equipAndDig();
   }
 

@@ -2,6 +2,7 @@ import { Bot } from "mineflayer";
 import { Recipe } from 'prismarine-recipe';
 import { Block } from 'prismarine-block';
 import MinecraftData from 'minecraft-data';
+import { BLOCK_SEARCH_MAX_DISTANCE } from "./Hugo";
 
 export function getItemIdByName(bot: Bot, itemName: string): number {
   return bot.registry.itemsByName[itemName].id;
@@ -20,14 +21,34 @@ export function getRecipes(bot: Bot, itemName: string): Recipe[] {
   return recipes.filter(recipe => recipe.result.id === itemId);
 }
 
-export function findBlockByDropItemName(bot: Bot, itemName: string, maxDistance: number): Block | null {
-  const blocks = getBlocksByDropItemName(bot, itemName);
-  const blockIds = blocks.map(block => block.id)
+const noBlockFoundCache = new Map<string, number>()
+const noBlockFoundCacheExpiry = 120000;
+const distanceRequiredForNoBlockFoundCache = BLOCK_SEARCH_MAX_DISTANCE - 1;
 
-  return bot.findBlock({
+export function findBlockByDropItemName(bot: Bot, itemName: string, maxDistance: number): Block | null {
+  const now = Date.now();
+  const expiry = noBlockFoundCache.get(itemName);
+  if (expiry && expiry > now) return null;
+  if (expiry && expiry <= now) noBlockFoundCache.delete(itemName);
+
+  const blocks = getBlocksByDropItemName(bot, itemName);
+  const blockIds = blocks.map(block => block.id);
+
+  const block = bot.findBlock({
     matching: blockIds,
     maxDistance
   });
+
+  if (!block) {
+    if (maxDistance >= distanceRequiredForNoBlockFoundCache) {
+      noBlockFoundCache.set(itemName, now + noBlockFoundCacheExpiry);
+    }
+    console.log(`Blocks not found: ${blocks.map(block => block.name).join(', ')}`);
+  } else {
+    console.log(`Found block: ${block.name}`);
+  }
+
+  return block;
 }
 
 export function getBlocksByDropItemName(bot: Bot, itemName: string): MinecraftData.IndexedBlock[] {
