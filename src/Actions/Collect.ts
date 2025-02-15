@@ -1,8 +1,9 @@
 import { Bot } from "mineflayer";
 import Action from "./Action";
 import { Entity } from 'prismarine-entity'
-import { getItemNameById } from "../botHelper";
+import { getItemNameById, getNearestItem } from "../botHelper";
 import Target from "../Targets/Target";
+import BeNearItem from "../Targets/BeNearItem";
 
 export default class Collect implements Action {
   private itemName: string;
@@ -18,7 +19,12 @@ export default class Collect implements Action {
     return `Collect:${this.itemName}`;
   }
 
-  getMissingDependencies(_: Bot): Target[] {
+  getMissingDependencies(bot: Bot): Target[] {
+    const nearestItem = getNearestItem(bot, this.itemName);
+    if (nearestItem) {
+      return [new BeNearItem(this.itemName)];
+    }
+
     return [];
   }
 
@@ -52,6 +58,12 @@ export default class Collect implements Action {
   }
 
   getEffort(bot: Bot): number {
+    const nearestItem = getNearestItem(bot, this.itemName);
+
+    if (nearestItem) {
+      return bot.entity.position.distanceTo(nearestItem.position);
+    }
+
     return 10000;
   }
 }

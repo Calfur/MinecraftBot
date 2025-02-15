@@ -5,14 +5,14 @@ import Action from "./Action";
 import { Vec3 } from "vec3";
 import { vec3ToString } from "../vec3Helper";
 
-const COMPLETED_DISTANCE = 2;
-
 export default class WalkTo implements Action {
   private position: Vec3;
+  private range: number;
   private inProgress = false;
 
-  constructor(position: Vec3) {
+  constructor(position: Vec3, range: number) {
     this.position = position;
+    this.range = range;
   }
 
   getKey(): string {
@@ -27,7 +27,7 @@ export default class WalkTo implements Action {
     this.inProgress = true;
     bot.chat(`Walking to ${vec3ToString(this.position)}`);
 
-    const goal = new goals.GoalNear(this.position.x, this.position.y, this.position.z, COMPLETED_DISTANCE);
+    const goal = new goals.GoalNear(this.position.x, this.position.y, this.position.z, this.range);
 
     bot.pathfinder.setMovements(new Movements(bot));
     bot.pathfinder.setGoal(goal);

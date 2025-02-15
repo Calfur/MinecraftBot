@@ -31,7 +31,7 @@ export default class Hugo {
       }
     });
 
-    this.bot.on('physicTick', () => {
+    this.bot.on('physicsTick', () => {
       this.tpsScoreboard?.tick();
 
       if (!this.isInitialized || !this.remainingTargets) {

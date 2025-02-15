@@ -3,6 +3,7 @@ import { Recipe } from 'prismarine-recipe';
 import { Block } from 'prismarine-block';
 import MinecraftData from 'minecraft-data';
 import { BLOCK_SEARCH_MAX_DISTANCE } from "./Hugo";
+import { Entity } from 'prismarine-entity'
 
 export function getItemIdByName(bot: Bot, itemName: string): number {
   return bot.registry.itemsByName[itemName].id;
@@ -56,4 +57,13 @@ export function getBlocksByDropItemName(bot: Bot, itemName: string): MinecraftDa
 
   return Object.values(bot.registry.blocks)
     .filter(block => block.drops?.includes(itemId));
+}
+
+export function getNearestItem(bot: Bot, itemName: string): Entity | null {
+  const itemId = getItemIdByName(bot, itemName);
+
+  return bot.nearestEntity((entity) =>
+    entity.name === 'item' &&
+    (entity.metadata[8] as any).itemId === itemId
+  );
 }
