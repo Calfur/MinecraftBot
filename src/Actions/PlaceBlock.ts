@@ -19,7 +19,7 @@ export default class PlaceBlock implements Action {
 
   getMissingDependencies(bot: Bot): Target[] {
     if (!bot.inventory.items().some(item => item.name === this.blockName)) {
-      return [new OwnItem(this.blockName)];
+      return [new OwnItem(this.blockName, 1)];
     };
 
     return [];

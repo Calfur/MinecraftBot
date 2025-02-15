@@ -30,7 +30,7 @@ export default class BeNearBlock implements Target {
     const nearestBlock = findBlockByDropItemName(bot, this.dropItemName, SEARCH_MAX_DISTANCE);
 
     if (nearestBlock) {
-      return [new WalkTo(nearestBlock.position, COMPLETED_DISTANCE - 0.1)];
+      return [new WalkTo(nearestBlock.position, COMPLETED_DISTANCE - 1)];
     }
 
     return [new PlaceBlock(this.dropItemName)];

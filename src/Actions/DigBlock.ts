@@ -20,8 +20,6 @@ export default class DigBlock implements Action {
   }
 
   getMissingDependencies(bot: Bot): Target[] {
-    // ToDo - Add tools
-
     const blocksWhichDropTheItem = getBlocksByDropItemName(bot, this.dropItemName);
     const firstBlockWithTools = blocksWhichDropTheItem.find(block => block.harvestTools && Object.keys(block.harvestTools).length > 0);
     if (firstBlockWithTools) {
@@ -31,7 +29,7 @@ export default class DigBlock implements Action {
       if (!bot.inventory.items().some(item => item.name === requiredToolName)) {
         console.log(`Requires tools to dig block: ${this.dropItemName}, ${requiredToolName}`);
 
-        return [new OwnItem(requiredToolName)];
+        return [new OwnItem(requiredToolName, 1)];
       }
     }
 

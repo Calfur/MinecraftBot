@@ -8,14 +8,19 @@ import DigBlock from "../Actions/DigBlock";
 
 export default class OwnItem implements Target {
   private itemName: string;
+  private count: number;
 
-  constructor(itemName: string) {
+  constructor(itemName: string, count: number) {
     this.itemName = itemName;
+    this.count = count;
   }
 
   isCompleted(bot: Bot): boolean {
     const isCompleted = bot.inventory.items()
-      .some(item => item.name === this.itemName);
+      .some(item => 
+        item.name === this.itemName &&
+        item.count >= this.count
+      );
 
     if (isCompleted) {
       bot.chat(`Target completed - OwnItem: ${this.itemName}`);

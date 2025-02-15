@@ -28,7 +28,7 @@ export default class Craft implements Action {
 
     if (missingItems.length !== 0) {
       return missingItems.map(
-        ingrdient => new OwnItem(getItemNameById(bot, ingrdient.id))
+        ingrdient => new OwnItem(getItemNameById(bot, ingrdient.id), ingrdient.count)
       );
     }
 
