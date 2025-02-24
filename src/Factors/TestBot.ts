@@ -15,7 +15,11 @@ export default class TestBot {
     }
 
     runTick() {
-
+        //replace with some actual calculation
+        const start = Date.now();
+        while (Date.now() - start < 100) {
+            // Do nothing, just waste time
+        }
     }
 
     trackTps() {
