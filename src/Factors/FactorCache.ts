@@ -5,22 +5,22 @@ export default class FactorCache {
     // not sure if set's make sense (performance, reasonability, etc.)
     dependents: { [key: string]: Set<string> } = {}; // describes which Factors depend on the Key factor (used to check for factors which need to be recalculated)
     dependencies: { [key: string]: Set<string> } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
-    changes: string[] = [];
+    changes: Set<string> = new Set<string>();
 
     calcChanges(forMS: number){
         var startTime = Date.now();
-        while (this.changes.length > 0 && Date.now() - startTime < forMS) {
-            const factor = this.changes[0]
+        while (this.changes.size > 0 && Date.now() - startTime < forMS) {
+            const factor = this.changes.values().next().value ?? ""; // "" should not be possible to reach
             if (this.dependents[factor]){
-                this.dependents[factor].forEach(dependent => this.changes.push(dependent)); // add dependents to changes
+                this.dependents[factor].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
             }
             this.cache[factor].factor.recalc(this);
-            this.changes.shift(); //remove recalced factor
+            this.changes.delete(factor); //remove recalced factor
         }
     }
 
     changeFactor(factor: string, value: any) {
         this.cache[factor].value = value;
-        this.dependents[factor].forEach(dependent => this.changes.push(dependent)); //also update dependents
+        this.dependents[factor].forEach(dependent => this.changes.add(dependent)); //also update dependents
     }
 }

@@ -21,7 +21,7 @@ export default class TestBot extends FactorCache {
     runTick() {
         //check for changes
         if (Math.random() < 0.1) {
-            this.changes.push("HeavyValue0");
+            this.changes.add("HeavyValue0");
         }
         
         // calc changes
