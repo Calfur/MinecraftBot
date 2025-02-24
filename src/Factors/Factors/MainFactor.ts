@@ -13,6 +13,7 @@ export default class MainFactor extends Factor<number> {
             this.get(new HeavyValue(i)); //simulate requiring 10 heavy values
             total += i
         }
+        console.log("calced MainFactor", total);
         return total
     }
 }

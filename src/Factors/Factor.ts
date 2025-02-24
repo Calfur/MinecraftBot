@@ -35,8 +35,10 @@ export default abstract class Factor<T> {
         bot.cache[this.id] = {value: value, factor: this};
 
         //track others dependents
-        for (const dependency of bot.dependencies[this.id]) {
-            bot.dependents[dependency].delete(this.id); // delete previously registered dependencies
+        if(bot.dependencies[this.id]){
+            for (const dependency of bot.dependencies[this.id]) {
+                bot.dependents[dependency].delete(this.id); // delete previously registered dependencies
+            }
         }
 
         for (const dependency of this.dependencies) {

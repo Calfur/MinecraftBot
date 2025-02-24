@@ -14,6 +14,7 @@ export default class HeavyValue extends Factor<number> {
             // Do nothing, just waste time
         }
         // no dependencies
+        console.log("calced HeavyValue", this.num);
         return this.num;
     }
 }
