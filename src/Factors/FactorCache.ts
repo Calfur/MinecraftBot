@@ -6,5 +6,20 @@ export default class FactorCache {
     dependencies: { [key: string]: Set<string> } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
     changes: string[] = [];
 
-    constructor() {}
+    calcChanges(forMS: number){
+        var lastTick = Date.now();
+        while (true) {
+            if (Date.now() - lastTick >= forMS) {
+                if (this.changes.length === 0) {
+                    return;
+                }
+                const factor = this.changes[0]
+                if (this.dependents[factor]){
+                    this.dependents[factor].forEach(dependent => this.changes.push(dependent)); // add dependents to changes
+                }
+                this.cache[factor].factor.recalc(this);
+                this.changes.shift(); //remove recalced factor
+            }
+        }
+    }
 }
