@@ -29,3 +29,12 @@ Faktoren repräsentieren einen Wert/variable und sind von 0-n Faktoren abhängig
         Bei faktoren einschätzen wie lange die berechnung dauert -> nicht starten wenn zu wenig zeit im tick übrig ist.
         Kann dynamisch getracked werden für faktoren typen
         sortierung Faktoren: Wichtigkeit * Änderung / Aufwand
+
+**implementation Decisonalgorythm**
+
+Maybe have state-info as predefined Factors (e.g. health, inventory)
+
+Some kinda need to be calced from bot (e.g. findBlocks)
+
+Difficulties:
+- avoid Loops (crafting, place-break, etc.)
