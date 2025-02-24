@@ -8,19 +8,27 @@ export default class FactorCache {
     changes: Set<string> = new Set<string>();
 
     calcChanges(forMS: number){
-        var startTime = Date.now();
+        const startTime = Date.now();
+        
         while (this.changes.size > 0 && Date.now() - startTime < forMS) {
-            const factor = this.changes.values().next().value ?? ""; // "" should not be possible to reach
-            if (this.dependents[factor]){
-                this.dependents[factor].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
+            const factorId = this.changes.values().next().value ?? ""; // "" should not be possible to reach
+            this.changes.delete(factorId); //remove recalced factor
+
+            const factor = this.cache[factorId].factor;
+            if (!factor) continue;
+
+            factor.recalc(this);
+
+            if (this.dependents[factorId]){
+                this.dependents[factorId].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
             }
-            this.cache[factor].factor.recalc(this);
-            this.changes.delete(factor); //remove recalced factor
         }
     }
 
     changeFactor(factor: string, value: any) {
         this.cache[factor].value = value;
-        this.dependents[factor].forEach(dependent => this.changes.add(dependent)); //also update dependents
+        if (this.dependents[factor]) {
+            this.dependents[factor].forEach(dependent => this.changes.add(dependent)); //also update dependents
+        }
     }
 }
