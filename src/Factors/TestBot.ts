@@ -2,9 +2,9 @@ import Factor from "./Factor";
 import MainFactor from "./Factors/MainFactor";
 
 export default class TestBot {
-    cache: { [key: string]: {value: any, factor: Factor<any>} } = {};
+    cache: { [key: string]: {value: any, factor: Factor<any>} } = {}; //Factor stored to get Factor from id again
     dependents: { [key: string]: Set<string> } = {}; // describes which Factors depend on the Key factor (used to check for factors which need to be recalculated)
-    dependencies: { [key: string]: string[] } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
+    dependencies: { [key: string]: Set<string> } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
     changes: string[] = [];
     private performanceTickCount = 0;
     private lastPerformanceCheck = Date.now();
