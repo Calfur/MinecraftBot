@@ -2,8 +2,10 @@ import Factor from "../Factor";
 import TestBot from "../TestBot";
 
 export default class HeavyValue extends Factor<number> {
-    constructor(name: string) {
-        super("HeavyValue" + name);
+    num: number
+    constructor(num: number) {
+        super("HeavyValue" + num);
+        this.num = num
     }
 
     calc(bot: TestBot): number {
@@ -12,6 +14,6 @@ export default class HeavyValue extends Factor<number> {
             // Do nothing, just waste time
         }
         // no dependencies
-        return 1;
+        return this.num;
     }
 }

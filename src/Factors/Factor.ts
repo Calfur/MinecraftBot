@@ -21,10 +21,18 @@ export default abstract class Factor<T> {
         if (bot.cache[this.id]) {
             value = bot.cache[this.id].value;
         } else {
-            value = this.calc(bot);
-            bot.cache[this.id] = {value, dependencies: []};
+            value = this.recalc(bot);
         }
         this.bot = undefined;
+        
+        return value;
+    }
+
+    recalc(bot: TestBot) {
+        this.bot = bot;
+
+        const value = this.calc(bot);
+        bot.cache[this.id] = {value: value, factor: this};
 
         //track others dependents
         for (const dependency of bot.dependencies[this.id]) {
@@ -43,6 +51,8 @@ export default abstract class Factor<T> {
         bot.dependencies[this.id].push(...this.dependencies); //store which factors this factor depends on
 
         this.dependencies.clear(); //clear temporary dependencies
+
+        this.bot = undefined;
         return value;
     }
 

@@ -1,9 +1,14 @@
+import Factor from "./Factor";
+import MainFactor from "./Factors/MainFactor";
+
 export default class TestBot {
-    cache: { [key: string]: {value: any, dependencies: string[]} } = {};
+    cache: { [key: string]: {value: any, factor: Factor<any>} } = {};
     dependents: { [key: string]: Set<string> } = {}; // describes which Factors depend on the Key factor (used to check for factors which need to be recalculated)
     dependencies: { [key: string]: string[] } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
+    changes: string[];
     private performanceTickCount = 0;
     private lastPerformanceCheck = Date.now();
+    currentMain: number = 0;
     
     constructor() {
         var lastTick = Date.now();
@@ -17,12 +22,21 @@ export default class TestBot {
     }
 
     runTick() {
-        //replace with some actual calculation
-        const start = Date.now();
-        while (Date.now() - start < 100) {
-            // Do nothing, just waste time
+        const main = new MainFactor().getValue(this);
+        if (main !== this.currentMain) {
+            this.currentMain = main;
+            console.log("new main:", this.currentMain);
         }
 
+        var lastTick = Date.now(); //somehow get that
+        while (true) {
+            if (Date.now() - lastTick >= 35) { //less than ticktime - HeavyValuetime
+                const factor = this.changes[0]
+                this.dependents[factor].forEach(dependent => this.changes.push(dependent)); // add dependents to changes
+                this.cache[factor].factor.recalc(this);
+                this.changes.shift(); //remove recalced factor
+            }
+        }
 
         // Konzept Prozess:
         // Faktoren repräsentieren einen Wert/variable und sind von 0-n Faktoren abhängig (im berechnungsprozess können andere faktoren abgerufen werden)

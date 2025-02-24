@@ -8,9 +8,11 @@ export default class MainFactor extends Factor<number> {
     }
 
     calc(bot: TestBot): number {
+        var total: number = 0
         for (let i = 0; i < 10; i++) {
-            this.get(new HeavyValue(i.toString())); //simulate requiring 10 heavy values
+            this.get(new HeavyValue(i)); //simulate requiring 10 heavy values
+            total += i
         }
-        return 1
+        return total
     }
 }
