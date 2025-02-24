@@ -1,5 +1,7 @@
 export default class TestBot {
     cache: { [key: string]: {value: any, dependencies: string[]} } = {};
+    dependents: { [key: string]: Set<string> } = {}; // describes which Factors depend on the Key factor (used to check for factors which need to be recalculated)
+    dependencies: { [key: string]: string[] } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
     private performanceTickCount = 0;
     private lastPerformanceCheck = Date.now();
     
@@ -37,14 +39,22 @@ export default class TestBot {
         //     Faktoren von denen keine anderen Faktoren abhängen nicht erneut berechnen (erst wenn wieder eine abhängigkeit besteht)
         // 
         // Bemerkungen:
-        // Faktoren bleiben immer gecached -> eine Faktorberechnung braucht kein aufwand für berechnen von anderen faktoren
-        // neue relevante Faktoren können Bot blockieren
-        // bei der ersten berechnung wird das ganze netzwerk zuerst berechnet
+        //     Faktoren bleiben immer gecached -> eine Faktorberechnung braucht kein aufwand für berechnen von anderen faktoren
+        //     neue relevante Faktoren können Bot blockieren
+        //     bei der ersten berechnung wird das ganze netzwerk zuerst berechnet
         //
         // Erweiterungen:
-        // Gewichtung von status-änderungen
-        // Gewichtung von wichtigkeit von Faktoren
-        // -> wichtigere Faktoren zuerst berechnen
+        //
+        //     Gewichtung von Faktoren:
+        //         Gewichtung von status-änderungen
+        //         Gewichtung von Wichtigkeit von Faktoren
+        //         -> wichtigere Faktoren zuerst berechnen
+        //         löst problem, dass bei zu vielen Faktoren und Änderungen schlechte Ergebnisse entstehen
+        //
+        //     Schätzung Aufwand Faktoren:
+        //         Bei faktoren einschätzen wie lange die berechnung dauert -> nicht starten wenn zu wenig zeit im tick übrig ist.
+        //         Kann dynamisch getracked werden für faktoren typen
+        //         sortierung Faktoren: Wichtigkeit * Änderung / Aufwand
     }
 
     trackTps() {
