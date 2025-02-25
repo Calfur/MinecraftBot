@@ -4,21 +4,21 @@ import Target from "./Target";
 import Action from "./Action";
 import TpsScoreboard from "./TpsScoreboard";
 import FactorCache from "./Factors/FactorCache";
+import TargetComplete from "./Factors/CompletionFactors/TargetComplete";
 
 export const BLOCK_SEARCH_MAX_DISTANCE = 32;
 
 export default class Bot extends FactorCache {
   bot: mineflayer.Bot;
-  private goals: Target[];
+  goals: Target[] = [];
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
 
-  constructor(goals: Target[]) {
+  constructor(name: string) {
     super();
-    this.goals = goals;
 
     this.bot = createBot({
-      username: 'Hugo',
+      username: name,
     })
 
     this.bot.loadPlugin(pathfinder)
@@ -29,15 +29,25 @@ export default class Bot extends FactorCache {
       this.bot.on('physicsTick', () => {
         this.tpsScoreboard?.tick();
   
-        //1. check for incomplete actions (cached)
-
-        //2. get startable actions (cached)
-
-        //3. start lowest effort action (not cached)
-  
+        this.calcTick();
       });
 
       this.tpsScoreboard = new TpsScoreboard(this.bot);
     });
+  }
+
+  calcTick() {
+    //1. check for incomplete actions (cached)
+    const remainingGoals = this.goals.filter((goal) => !new TargetComplete(goal).getValue(this));
+    this.bot.chat(`Remaining goals: ${remainingGoals.length}`);
+
+    //2. get startable actions (cached)
+
+    //3. start lowest effort action (not cached)
+
+    //4. check for status changes
+
+    //5. do some calculations
+    this.calcChanges(10);
   }
 }

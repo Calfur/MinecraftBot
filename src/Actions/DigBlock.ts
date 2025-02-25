@@ -3,7 +3,7 @@ import mineflayer from "mineflayer"
 import Bot from "../Bot"
 import Target from "../Target"
 import OwnTool from "../Targets/OwnTool"
-import { REACHDISTANCE } from "../Constants"
+import { REACHDISTANCE, SEARCHDISTANCE } from "../Constants"
 import { goals } from "mineflayer-pathfinder"
 
 export class DigBlock extends Action {
@@ -16,15 +16,8 @@ export class DigBlock extends Action {
         this.goal = goal;
     }
 
-    // canRun(bot: mineflayer.Bot): boolean {
-    //     const mineBlock = bot.findBlock({ matching: bot.registry.blocksByName[this.block].id, maxDistance: 32 });
-    //     if (!mineBlock) return false
-    //     const standsOnGround = bot.entity.position.y % 0.5 === 0
-    //     return bot.canDigBlock(mineBlock) && standsOnGround
-    // }
-
     run(bot: Bot): void {
-        const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: 32 });
+        const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
         if (!mineBlock) {
             // explore world
             return
@@ -51,7 +44,7 @@ export class DigBlock extends Action {
 
     getEffortNow(bot: mineflayer.Bot): number {
         // maybe change to only calc varying effort
-        const mineBlock = bot.findBlock({ matching: bot.registry.blocksByName[this.block].id, maxDistance: 32 });
+        const mineBlock = bot.findBlock({ matching: bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
         if (!mineBlock) return Infinity
         const distance = mineBlock.position.distanceTo(bot.entity.position)
         // TODO: depends on tool in hand
@@ -68,10 +61,6 @@ export class DigBlock extends Action {
     }
 
     getRequirements(bot: mineflayer.Bot): Target[] {
-        const harvestTools = bot.registry.blocksByName[this.block].harvestTools
-        if (harvestTools) {
-            return [new OwnTool(Object.keys(harvestTools))]
-        }
-        return []
+        return [new OwnTool(bot.registry.blocksByName[this.block])]
     }
 }

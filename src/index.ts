@@ -1,10 +1,19 @@
 import Target from "./Target";
 import OwnItem from "./Targets/OwnItem";
-import Hugo from "./Bot";
+import Bot from "./Bot";
+import OwnTool from "./Targets/OwnTool";
 
-const initialTargets: Target[] = [
-  new OwnItem('stick', 5),
-  new OwnItem('orange_dye', 1),
-];
 
-const hugo = new Hugo(initialTargets);
+const steve = new Bot("Steve");
+
+steve.bot.once('spawn', () => {
+    const initialTargets: Target[] = [
+      new OwnItem('stick', 5),
+      new OwnItem('orange_dye', 1),
+      new OwnTool(steve.bot.registry.blocksByName['dirt']),
+    ];
+    
+    steve.goals.push(...initialTargets);
+    
+    steve.changes.add("TargetCompleteOwnTool:fordirt");
+});

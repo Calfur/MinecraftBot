@@ -4,7 +4,7 @@ import MainFactor from "./MainFactor";
 export default class TestBot extends FactorCache {
     private performanceTickCount = 0;
     private lastPerformanceCheck = Date.now();
-    currentMain: number = 0;
+    currentMain: string = "";
     
     constructor() {
         super();

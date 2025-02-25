@@ -8,7 +8,7 @@ export default abstract class Factor<T> {
         this.id = id;
     }
 
-    get(factor: Factor<T>): T {
+    protected get<U>(factor: Factor<U>): U {
         if (!this.cache) throw new Error("No cache defined");
 
         if (!this.cache.dependents[factor.id]) {
@@ -48,5 +48,5 @@ export default abstract class Factor<T> {
         return value;
     }
 
-    abstract calc(cache: FactorCache): T
+    protected abstract calc(cache: FactorCache): T
 }

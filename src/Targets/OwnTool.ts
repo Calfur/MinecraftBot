@@ -10,7 +10,7 @@ export default class OwnTool extends Target {
   private harvestTools: string[]
 
   constructor(toolsFor: Block) {
-    super("OwnTool:for"+toolsFor);
+    super("OwnTool:for"+toolsFor.name);
     this.toolsFor = toolsFor;
     this.harvestTools = Object.keys(this.toolsFor.harvestTools ?? {});
   }
