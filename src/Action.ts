@@ -17,8 +17,8 @@ export default abstract class Action {
     // Requirements to run this action
     abstract getRequirements(bot: mineflayer.Bot): Target[];
 
-    // Returns the effort required to execute this action later
-    abstract getEffortFuture(bot: Bot): number;
+    // // Returns the effort required to execute this action later
+    // abstract getEffortFuture(bot: Bot): number;
 
     // Returns the effort required to execute this action currently
     abstract getEffortNow(bot: mineflayer.Bot): number;
@@ -31,14 +31,14 @@ export default abstract class Action {
         this.stopped = true
     }
 
-    getTotalEffortFuture(bot: Bot): number {
-        var effort = 0
-        effort += this.getEffortFuture(bot)
-        for (const requirement of this.getRequirements(bot.bot)) {
-            effort += requirement.getTotalEffortFuture(bot)
-        }
-        return effort
-    }
+    // getTotalEffortFuture(bot: Bot): number {
+    //     var effort = 0
+    //     effort += this.getEffortFuture(bot)
+    //     for (const requirement of this.getRequirements(bot.bot)) {
+    //         effort += requirement.getTotalEffortFuture(bot)
+    //     }
+    //     return effort
+    // }
 
     canRun(bot: mineflayer.Bot): boolean { 
         for (const requirement of this.getRequirements(bot)) {

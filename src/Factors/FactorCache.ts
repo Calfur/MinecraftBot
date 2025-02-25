@@ -19,6 +19,7 @@ export default class FactorCache {
 
             factor.recalc(this);
 
+            //TODO only change dependents if the value changed
             if (this.dependents[factorId]){
                 this.dependents[factorId].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
             }
