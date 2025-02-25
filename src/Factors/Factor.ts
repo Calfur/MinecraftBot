@@ -12,24 +12,20 @@ export default abstract class Factor<T> {
         if (!this.cache) throw new Error("No cache defined");
 
         if (!this.cache.dependents[factor.id]) {
-            this.cache.dependents[factor.id] = new Set<string>();
+            this.cache.dependents[factor.id] = new Set();
         }
         this.cache.dependents[factor.id].add(this.id); // register this factor as dependent
 
+        if (!this.cache.dependencies[this.id]) {
+            this.cache.dependencies[this.id] = new Set();
+        }
         this.cache.dependencies[this.id].add(factor.id); //store which factors this factor depends on
 
         return factor.getValue(this.cache);
     }
 
     getValue(cache: FactorCache): T {
-        var value: T;
-        if (cache.cache[this.id]) {
-            value = cache.cache[this.id].value;
-        } else {
-            value = this.recalc(cache);
-        }
-        
-        return value;
+        return cache.cache[this.id]?.value ?? this.recalc(cache);
     }
 
     recalc(cache: FactorCache) {
@@ -42,7 +38,7 @@ export default abstract class Factor<T> {
             }
         }
 
-        cache.dependencies[this.id] = new Set<string>();
+        cache.dependencies[this.id] = new Set();
 
         // calc Value
         const value = this.calc(cache);
