@@ -4,13 +4,14 @@ import Target from "./Target";
 import Action from "./Action";
 import TpsScoreboard from "./TpsScoreboard";
 import FactorCache from "./Factors/FactorCache";
-import TargetComplete from "./Factors/TargetComplete";
+import BestAction from "./Factors/BestAction";
+import Factor from "./Factors/Factor";
 
 export const BLOCK_SEARCH_MAX_DISTANCE = 32;
 
 export default class Bot extends FactorCache {
   bot: mineflayer.Bot;
-  goals: Target[] = [];
+  goals: Factor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
 
@@ -37,32 +38,19 @@ export default class Bot extends FactorCache {
   }
 
   calcTick() {
-    //1. check for incomplete actions (cached)
-    const remainingGoals = this.goals.filter((goal) => !new TargetComplete(goal).getValue(this));
+    //1. check if bestAction changed
+    const bestAction = new BestAction(this).calc(this);
 
-    if (remainingGoals.length > 0) {
-      //2. get startable actions (cached)
-      var actions = []
-      for (const goal of remainingGoals) {
-        // i think instead of having Actions and Targets, we have Factors and then later run Actions (Action only to run)
-
-        // for goals get actions working towards it (action, importance (1-0))
-        //
-        // for actions get requirements
-        // for requirements get actions working towards it
-
-        // could keep path i think
-
-        //maybe reduce redundant Actions
-      }
-      
-      //3. start lowest effort action (not cached)
-
+    if (bestAction !== this.currentAction) {
+      this.currentAction?.stop(this.bot);
+      this.currentAction = bestAction;
+      if (this.currentAction) this.currentAction.run(this);
+      this.bot.chat(`Running action: ${this.currentAction?.id}`);
     }
       
-    //4. check for status changes
+    //5. check for relevant status changes
 
-    //5. do some calculations
+    //6. do some cache network calculations
     this.calcChanges(10);
   }
 }

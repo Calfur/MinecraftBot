@@ -1,6 +1,8 @@
 ## Konzept Prozess:
 Faktoren repräsentieren einen Wert/variable und sind von 0-n Faktoren abhängig (im berechnungsprozess können andere faktoren abgerufen werden)
 
+in General all parameters in constructor should be part of id
+
 **faktor neu berechnen:** 
     andere Faktoren welche davon abhängig sind als geändert markieren, 
     eigene Abhängigkeiten entfernen
