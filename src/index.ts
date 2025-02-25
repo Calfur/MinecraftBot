@@ -1,3 +1,11 @@
-import TestBot from "./Factors/TestBot";
+import Target from "./Targets/Target";
+import OwnItem from "./Targets/OwnItem";
+import Hugo from "./Hugo";
 
-new TestBot()
+const initialTargets: Target[] = [
+//   new OwnItem('cobblestone', 1),
+  new OwnItem('stick', 5),
+  new OwnItem('orange_dye', 1),
+];
+
+const hugo = new Hugo(initialTargets);
