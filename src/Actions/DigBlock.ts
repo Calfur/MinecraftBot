@@ -1,87 +1,77 @@
-import { Bot } from "mineflayer";
-import Target from "../Targets/Target";
-import Action from "./Action";
-import BeNearBlock from "../Targets/BeNearBlock";
-import { findBlockByDropItemName, getBlocksByDropItemName } from "../botHelper";
-import OwnItem from "../Targets/OwnItem";
+import Action from "../Action"
+import mineflayer from "mineflayer"
+import Bot from "../Bot"
+import Target from "../Target"
+import OwnTool from "../Targets/OwnTool"
+import { REACHDISTANCE } from "../Constants"
+import { goals } from "mineflayer-pathfinder"
 
-const MAX_DIG_RANGE = 4;
-
-export default class DigBlock implements Action {
-  private dropItemName: string;
-  private inProgress = false;
-
-  constructor(dropItemName: string) {
-    this.dropItemName = dropItemName;
-  }
-
-  getKey(): string {
-    return `DigBlock:Drops:${this.dropItemName}`;
-  }
-
-  getMissingDependencies(bot: Bot): Target[] {
-    const blocksWhichDropTheItem = getBlocksByDropItemName(bot, this.dropItemName);
-    const firstBlockWithTools = blocksWhichDropTheItem.find(block => block.harvestTools && Object.keys(block.harvestTools).length > 0);
-    if (firstBlockWithTools) {
-      const requiredToolId = Number(Object.keys(firstBlockWithTools.harvestTools!)[0])
-      const requiredToolName = bot.registry.items[requiredToolId].name;
-
-      if (!bot.inventory.items().some(item => item.name === requiredToolName)) {
-        console.log(`Requires tools to dig block: ${this.dropItemName}, ${requiredToolName}`);
-
-        return [new OwnItem(requiredToolName, 1)];
-      }
+export class DigBlock extends Action {
+    block: string
+    goal: string
+    //TODO maybe allow mining multiple blocks in one Action or let it use multiple actions
+    constructor(block: string, goal: string) { //maybe change to Actual Block instance instead of string
+        super("MineBlock" + block);
+        this.block = block;
+        this.goal = goal;
     }
 
-    const nearestBlock = findBlockByDropItemName(bot, this.dropItemName, MAX_DIG_RANGE);
+    // canRun(bot: mineflayer.Bot): boolean {
+    //     const mineBlock = bot.findBlock({ matching: bot.registry.blocksByName[this.block].id, maxDistance: 32 });
+    //     if (!mineBlock) return false
+    //     const standsOnGround = bot.entity.position.y % 0.5 === 0
+    //     return bot.canDigBlock(mineBlock) && standsOnGround
+    // }
 
-    if (!nearestBlock) {
-      return [new BeNearBlock(this.dropItemName)];
-    }
-
-    return [];
-  }
-
-  startAction(bot: Bot): void {
-    this.inProgress = true;
-    bot.chat(`Digging block which drops ${this.dropItemName}`);
-
-    const nearestBlock = findBlockByDropItemName(bot, this.dropItemName, MAX_DIG_RANGE);
-
-    if (!nearestBlock) {
-      throw new Error(`No block found: ${this.dropItemName}`);
-    }
-
-    const tool = bot.pathfinder.bestHarvestTool(nearestBlock);
-
-    const equipAndDig = async () => {
-      try {
-        if (tool) {
-          await bot.equip(tool, 'hand');
+    run(bot: Bot): void {
+        const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: 32 });
+        if (!mineBlock) {
+            // explore world
+            return
         }
-        await bot.dig(nearestBlock);
-        bot.chat(`Successfully dug block which drops ${this.dropItemName}`);
-      } catch (e) {
-        console.error(e);
-        bot.chat(`Exception while digging block which drops ${this.dropItemName}`);
-      } finally {
-        this.inProgress = false;
-      }
-    };
 
-    equipAndDig();
-  }
+        bot.bot.pathfinder.goto(new goals.GoalNear(mineBlock.position.x, mineBlock.position.y, mineBlock.position.z, REACHDISTANCE)).then(() => {
+            if (!bot.bot.canDigBlock(mineBlock)) {
+                bot.bot.chat("Not able to dig block " + mineBlock.name + " at " + mineBlock.position.toString())
+                this.stopped = true
+            }
+            //TODO: select proper tool
+            const digPromise = bot.bot.dig(mineBlock, false);
+            
+            digPromise.then(() => this.stopped = true);
+            
+            digPromise.catch(() => { // important to catch promise-errors
+                this.stopped = true
+                bot.bot.chat("Digging failed for block " + mineBlock.name + " at " + mineBlock.position.toString())
+            });
+        }).catch(() => {
+            this.stopped = true
+        })
+    }
 
-  cancelAction(bot: Bot): void {
-    bot.stopDigging();
-    bot.chat(`Canceled Digging block which drops ${this.dropItemName}`);
-  }
+    getEffortNow(bot: mineflayer.Bot): number {
+        // maybe change to only calc varying effort
+        const mineBlock = bot.findBlock({ matching: bot.registry.blocksByName[this.block].id, maxDistance: 32 });
+        if (!mineBlock) return Infinity
+        const distance = mineBlock.position.distanceTo(bot.entity.position)
+        // TODO: depends on tool in hand
+        return (distance * 20 / bot.physics.sprintSpeed) + bot.digTime(mineBlock)
+    }
 
-  isInProgress(): boolean {
-    return this.inProgress;
-  }
+    abortAction(bot: mineflayer.Bot): void {
+        bot.stopDigging();
+    }
 
-  getEffort(bot: Bot): number {
-    return 5;
-  }
+    getEffortFuture(bot: Bot): number {
+        //depends on rarity and hardness of block
+        return 200
+    }
+
+    getRequirements(bot: mineflayer.Bot): Target[] {
+        const harvestTools = bot.registry.blocksByName[this.block].harvestTools
+        if (harvestTools) {
+            return [new OwnTool(Object.keys(harvestTools))]
+        }
+        return []
+    }
 }

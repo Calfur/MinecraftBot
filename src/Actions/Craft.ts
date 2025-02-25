@@ -1,87 +1,49 @@
-import { Bot } from 'mineflayer';
-import Action from './Action';
-import { Item } from 'prismarine-item';
-import { Recipe, RecipeItem } from 'prismarine-recipe';
-import { getItemNameById, getRecipes } from '../botHelper';
-import Target from '../Targets/Target';
+import mineflayer from 'mineflayer'
+import Action from '../Action'
+import { Recipe } from 'prismarine-recipe';
+import { REACHDISTANCE } from '../Constants';
 import OwnItem from '../Targets/OwnItem';
-import BeNearBlock from '../Targets/BeNearBlock';
+import Bot from '../Bot';
+import Target from '../Target';
 
-export default class Craft implements Action {
-  private recipe: Recipe;
-  private inProgress = false;
-
-  constructor(
+export default class Craft extends Action {
     recipe: Recipe
-  ) {
-    this.recipe = recipe;
-  }
-
-  getKey(): string {
-    return `Craft:${this.recipe.result.id}`;
-  }
-
-  getMissingDependencies(bot: Bot): Target[] {
-    const inventoryItems = bot.inventory.items();
-    const missingItems = getRequiredItemsToCraft(this.recipe)
-      .filter(recipeItem => !isRecipeItemInInventory(inventoryItems, recipeItem));
-
-    if (missingItems.length !== 0) {
-      return missingItems.map(
-        ingrdient => new OwnItem(getItemNameById(bot, ingrdient.id), ingrdient.count)
-      );
+    count: number
+    constructor(recipe: Recipe, count: number = 1) {
+        super("Craft" + recipe.result.id + " " + count)
+        this.recipe = recipe
+        this.count = count
+    }
+    run(bot: Bot): void {
+        if (this.recipe.requiresTable) {
+            const crafting_table = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName["crafting_table"].id, maxDistance: REACHDISTANCE })
+            if (!crafting_table) return
+            bot.bot.craft(this.recipe, this.count, crafting_table)
+        } else {
+            bot.bot.craft(this.recipe, this.count)
+        }
     }
 
-    if (this.recipe.requiresTable) {
-      const craftingTable = getCraftingTable(bot);
-
-      if (!craftingTable) {
-        return [new BeNearBlock('crafting_table')];
-      }
+    getEffortFuture(bot: Bot): number {
+        return 0
     }
 
-    return [];
-  }
+    getEffortNow(bot: mineflayer.Bot): number {
+        return 0
+    }
 
-  startAction(bot: Bot): void {
-    this.inProgress = true;
-    bot.chat(`Crafting ${getItemNameById(bot, this.recipe.result.id)}`);
+    getRequirements(bot: mineflayer.Bot): Target[] {
+        // if (this.recipe.requiresTable) {
+        //     return [new BlockNearby("crafting_table")]
+        // }
+        var requirements = []
+        for (const item of this.recipe.delta.filter(item => item.count < 0)) {
+            requirements.push(new OwnItem(bot.registry.items[item.id].name, -item.count * this.count / this.recipe.result.count))
+        }
+        return requirements
+    }
 
-    const craftingTable = getCraftingTable(bot);
-    bot.craft(this.recipe, 1, craftingTable).then(() => {
-      this.inProgress = false;
-    });
-  }
-
-  cancelAction(bot: Bot): void {
-    bot.chat(`Canceled crafting ${getItemNameById(bot, this.recipe.result.id)}`);
-  }
-
-  isInProgress(): boolean {
-    return this.inProgress;
-  }
-
-  getEffort(bot: Bot): number {
-    return 0;
-  }
-}
-
-function isRecipeItemInInventory(inventoryItems: Item[], recipeItem: RecipeItem): boolean {
-  return inventoryItems.filter(
-    inventoryItem =>
-      inventoryItem.type === recipeItem.id &&
-      inventoryItem.count >= Math.abs(recipeItem.count)
-  ).length > 0;
-}
-
-function getRequiredItemsToCraft(recipe: Recipe): RecipeItem[] {
-  return recipe.delta
-    .filter(d => d.count < 0);
-}
-
-function getCraftingTable(bot: Bot) {
-  return bot.findBlock({
-    matching: block => block.name.includes('crafting_table'),
-    maxDistance: 3
-  }) ?? undefined;
+    abortAction(bot: mineflayer.Bot): void {
+        return
+    }
 }

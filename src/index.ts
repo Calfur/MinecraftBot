@@ -1,9 +1,8 @@
-import Target from "./Targets/Target";
+import Target from "./Target";
 import OwnItem from "./Targets/OwnItem";
-import Hugo from "./Hugo";
+import Hugo from "./Bot";
 
 const initialTargets: Target[] = [
-//   new OwnItem('cobblestone', 1),
   new OwnItem('stick', 5),
   new OwnItem('orange_dye', 1),
 ];

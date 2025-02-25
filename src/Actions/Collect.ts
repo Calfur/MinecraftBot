@@ -1,69 +1,60 @@
-import { Bot } from "mineflayer";
-import Action from "./Action";
+import mineflayer from "mineflayer";
+import Action from "../Action";
 import { Entity } from 'prismarine-entity'
-import { getItemNameById, getNearestItem } from "../botHelper";
-import Target from "../Targets/Target";
-import BeNearItem from "../Targets/BeNearItem";
+import Target from "../Target";
+import Bot from "../Bot";
+import { COLLECTDISTANCE } from "../Constants";
+import { goals } from "mineflayer-pathfinder";
 
-export default class Collect implements Action {
+export default class Collect extends Action {
   private itemName: string;
-  private inProgress = false;
 
-  constructor(
-    itemName: string
-  ) {
+  constructor(itemName: string) {
+    super("Collect" + itemName);
     this.itemName = itemName;
   }
 
-  getKey(): string {
-    return `Collect:${this.itemName}`;
-  }
-
-  getMissingDependencies(bot: Bot): Target[] {
-    const nearestItem = getNearestItem(bot, this.itemName);
-    if (nearestItem) {
-      return [new BeNearItem(this.itemName)];
-    }
-
+  getRequirements(bot: mineflayer.Bot): Target[] {
     return [];
   }
 
-  startAction(bot: Bot): void {
-    this.inProgress = true;
-    bot.chat(`Collecting ${this.itemName}`);
+  run(bot: Bot): void {
+    const closestItem = this.getClosestItem(bot.bot);
+    if (!closestItem) {
+      this.stopped = true
+      bot.bot.chat('No items found ' + this.itemName)
+      return
+    } 
 
-    const listener = (collector: Entity, collected: Entity) => {
-      if (collector !== bot.entity) return;
-      if (collected.name !== 'item') return;
-
-      var itemId = (collected.metadata[8] as any).itemId;
-      var itemName = getItemNameById(bot, itemId);
-
-      if (itemName !== this.itemName) return;
-
-      bot.chat(`Collected ${itemName}`);
-      this.inProgress = false;
-      bot.removeListener('playerCollect', listener);
-    }
-    bot.on('playerCollect', listener);
+    bot.bot.pathfinder.goto(new goals.GoalNear(closestItem.position.x, closestItem.position.y, closestItem.position.z, COLLECTDISTANCE)).then(() => {
+        this.stopped = true
+    }).catch(() => {
+        this.stopped = true
+    })
   }
 
-  isInProgress(): boolean {
-    return this.inProgress;
+
+  abortAction(bot: mineflayer.Bot): void {
+    bot.pathfinder.stop();
   }
 
-  cancelAction(bot: Bot): void {
-    this.inProgress = false;
-    bot.chat(`Canceled collecting ${this.itemName}`);
-  }
-
-  getEffort(bot: Bot): number {
-    const nearestItem = getNearestItem(bot, this.itemName);
-
-    if (nearestItem) {
-      return bot.entity.position.distanceTo(nearestItem.position);
-    }
-
+  getEffortFuture(bot: Bot): number {
     return 10000;
+  }
+
+  getEffortNow(bot: mineflayer.Bot): number {
+    const closestItem = this.getClosestItem(bot);
+    if (!closestItem) return Infinity
+    return closestItem.position.distanceTo(bot.entity.position)
+  }
+
+  private getClosestItem(bot: mineflayer.Bot): Entity | undefined {
+    const entities = Object.values(bot.entities);
+    const itemDrops = entities.filter(entity => entity.type === 'other' && entity.entityType === 55)
+    const itemId = bot.registry.itemsByName[this.itemName as string].id
+    var itemEntity = itemDrops.filter(entity => (entity.metadata[8] as {itemId: number}).itemId === itemId);
+    itemEntity = itemEntity.sort((a, b) => a.position.distanceTo(bot.entity.position) - b.position.distanceTo(bot.entity.position));
+    if (itemEntity.length === 0) return undefined
+    return itemEntity[0];
   }
 }

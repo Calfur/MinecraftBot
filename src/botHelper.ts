@@ -2,7 +2,7 @@ import { Bot } from "mineflayer";
 import { Recipe } from 'prismarine-recipe';
 import { Block } from 'prismarine-block';
 import MinecraftData from 'minecraft-data';
-import { BLOCK_SEARCH_MAX_DISTANCE } from "./Hugo";
+import { BLOCK_SEARCH_MAX_DISTANCE } from "./Bot";
 import { Entity } from 'prismarine-entity'
 
 export function getItemIdByName(bot: Bot, itemName: string): number {

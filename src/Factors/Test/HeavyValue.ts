@@ -1,5 +1,5 @@
 import Factor from "../Factor";
-import TestBot from "../TestBot";
+import TestBot from "./TestBot";
 
 export default class HeavyValue extends Factor<number> {
     num: number

@@ -1,5 +1,5 @@
-import FactorCache from "./FactorCache";
-import MainFactor from "./Factors/MainFactor";
+import FactorCache from "../FactorCache";
+import MainFactor from "./MainFactor";
 
 export default class TestBot extends FactorCache {
     private performanceTickCount = 0;
