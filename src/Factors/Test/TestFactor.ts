@@ -1,8 +1,8 @@
-import Bot from "../Bot";
+import TestBot from "./TestBot";
 
 export default abstract class Factor<T> {
     id: string
-    bot: Bot | null = null // temporary storage of cache during calculation
+    bot: TestBot | null = null // temporary storage of cache during calculation
     //TODO maybe add some libs like items/blocks/recipes here for easier use
 
     constructor(id: string) {
@@ -25,11 +25,11 @@ export default abstract class Factor<T> {
         return factor.getValue(this.bot);
     }
 
-    getValue(bot: Bot): T {
+    getValue(bot: TestBot): T {
         return bot.cache[this.id]?.value ?? this.recalc(bot);
     }
 
-    recalc(bot: Bot) {
+    recalc(bot: TestBot) {
         this.bot = bot;
 
         // clear dependencies
@@ -49,5 +49,5 @@ export default abstract class Factor<T> {
         return value;
     }
 
-    protected abstract calc(bot: Bot): T
+    protected abstract calc(bot: TestBot): T
 }

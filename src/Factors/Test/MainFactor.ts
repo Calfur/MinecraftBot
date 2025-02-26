@@ -1,4 +1,4 @@
-import Factor from "../Factor";
+import Factor from "./TestFactor";
 import TestBot from "./TestBot";
 import HeavyValue from "./HeavyValue";
 

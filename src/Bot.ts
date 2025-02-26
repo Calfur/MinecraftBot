@@ -1,23 +1,22 @@
 import mineflayer, { createBot } from "mineflayer";
 import { pathfinder } from "mineflayer-pathfinder";
-import Target from "./Target";
 import Action from "./Action";
 import TpsScoreboard from "./TpsScoreboard";
-import FactorCache from "./Factors/FactorCache";
 import BestAction from "./Factors/BestAction";
 import Factor from "./Factors/Factor";
 
-export const BLOCK_SEARCH_MAX_DISTANCE = 32;
-
-export default class Bot extends FactorCache {
+export default class Bot {
   bot: mineflayer.Bot;
   goals: Factor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
+  cache: { [key: string]: {value: any, factor: Factor<any>} } = {}; //Factor stored to get Factor from id again
+  // not sure if set's make sense (performance, reasonability, etc.)
+  dependents: { [key: string]: Set<string> } = {}; // describes which Factors depend on the Key factor (used to check for factors which need to be recalculated)
+  dependencies: { [key: string]: Set<string> } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
+  changes: Set<string> = new Set<string>();
 
   constructor(name: string) {
-    super();
-
     this.bot = createBot({
       username: name,
     })
@@ -52,5 +51,31 @@ export default class Bot extends FactorCache {
 
     //6. do some cache network calculations
     this.calcChanges(10);
+  }
+
+  calcChanges(forMS: number){
+    const startTime = Date.now();
+    
+    while (this.changes.size > 0 && Date.now() - startTime < forMS) {
+      const factorId = this.changes.values().next().value ?? ""; // "" should not be possible to reach
+      this.changes.delete(factorId); //remove recalced factor
+
+      const factor = this.cache[factorId].factor;
+      if (!factor) continue;
+
+      factor.recalc(this);
+
+      //TODO only change dependents if the value changed
+      if (this.dependents[factorId]){
+        this.dependents[factorId].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
+      }
+    }
+  }
+
+  changeFactor(factor: string, value: any) {
+    this.cache[factor].value = value;
+    if (this.dependents[factor]) {
+      this.dependents[factor].forEach(dependent => this.changes.add(dependent)); //also update dependents
+    }
   }
 }
