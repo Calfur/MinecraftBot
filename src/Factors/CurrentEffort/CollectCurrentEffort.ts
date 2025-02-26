@@ -10,7 +10,7 @@ export default class CollectCurrentEffort extends Factor<number> {
         this.item = item
     }
 
-    calc(bot: Bot): number {
+    protected calc(bot: Bot): number {
         const closestItem = this.getClosestItem(bot.bot);
         if (!closestItem) return Infinity
         return closestItem.position.distanceTo(bot.bot.entity.position)

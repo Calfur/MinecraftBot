@@ -11,7 +11,7 @@ export default class FutureEffortMine extends Factor<number> {
         this.goal = goal;
     }
 
-    calc(bot: Bot): number {
+    protected calc(bot: Bot): number {
         //TODO add Tools, Rarity and hardness
         return 200
     }

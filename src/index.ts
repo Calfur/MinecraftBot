@@ -13,6 +13,4 @@ steve.bot.once('spawn', () => {
     ];
     
     steve.neededActions.push(...initialTargets);
-    
-    steve.changes.add("TargetCompleteOwnTool:fordirt");
 });

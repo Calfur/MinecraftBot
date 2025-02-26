@@ -7,7 +7,7 @@ export default class BestAction extends Factor<Action|null> {
         super("bestAction");
     }
 
-    calc(bot: Bot): Action|null {
+    protected calc(bot: Bot): Action|null {
         //2. get startable actions (cached)
         var actions = []
         for (const action of bot.neededActions) {

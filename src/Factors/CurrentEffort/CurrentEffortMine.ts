@@ -9,7 +9,7 @@ export default class CurrentEffortMine extends Factor<number> {
         this.block = block
     }
 
-    calc(bot: Bot): number {
+    protected calc(bot: Bot): number {
         // maybe change to only calc varying effort
         const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
         if (!mineBlock) return Infinity

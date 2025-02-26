@@ -8,7 +8,7 @@ export default class MineCanRun extends Factor<boolean> {
         this.block = block
     }
 
-    calc(bot: Bot): boolean {
+    protected calc(bot: Bot): boolean {
         //TODO consider tools
         return true
     }

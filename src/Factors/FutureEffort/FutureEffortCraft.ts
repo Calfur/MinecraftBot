@@ -12,7 +12,7 @@ export default class FutureEffortCraft extends Factor<number> {
             this.count = count
         }
 
-    calc(bot: Bot): number {
+    protected calc(bot: Bot): number {
         if (this.recipe.requiresTable) {
             // return effort have placed crafting table
         }

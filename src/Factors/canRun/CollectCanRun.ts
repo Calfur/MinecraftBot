@@ -10,7 +10,7 @@ export default class CollectCanRun extends Factor<boolean> {
         this.item = item
     }
 
-    calc(bot: Bot): boolean {
+    protected calc(bot: Bot): boolean {
         return this.getClosestItem(bot.bot) !== undefined
     }
 

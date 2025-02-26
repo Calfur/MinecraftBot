@@ -37,7 +37,7 @@ export default class Bot {
 
   calcTick() {
     //1. check if bestAction changed
-    const bestAction = new BestAction(this).calc(this);
+    const bestAction = new BestAction(this).getValue(this);
 
     if (bestAction !== this.currentAction) {
       this.currentAction?.stop(this.bot);
@@ -64,7 +64,7 @@ export default class Bot {
 
       factor.recalc(this);
 
-      //TODO only change dependents if the value changed
+      //TODO only change dependents if the value is diffrent
       if (this.dependents[factorId]){
         this.dependents[factorId].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
       }

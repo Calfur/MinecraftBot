@@ -25,7 +25,7 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
         this.count = count
     }
 
-    calc(bot: Bot): {action: Action, canRun: boolean, effortFuture: number, effortNow: number}[] {
+    protected calc(bot: Bot): {action: Action, canRun: boolean, effortFuture: number, effortNow: number}[] {
         // TODO keep path to avoid infinite loop (probably needs to be part of id, maybe more seperation possible)
         const remainingCount = this.count - bot.bot.inventory.count(this.item, null);
 

@@ -9,7 +9,7 @@ export default class CraftCanRun extends Factor<boolean> {
         this.recipe = recipe
     }
 
-    calc(bot: Bot): boolean {
+    protected calc(bot: Bot): boolean {
         //TODO consider craftingtable
         for (const item of this.recipe.delta) {
             if (bot.bot.inventory.count(item.id, null) < -item.count) {

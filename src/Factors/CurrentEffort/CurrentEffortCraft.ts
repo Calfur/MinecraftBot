@@ -9,7 +9,7 @@ export default class CurrentEffortCraft extends Factor<number> {
         this.recipe = recipe
     }
 
-    calc(bot: Bot): number {
+    protected calc(bot: Bot): number {
         return 0
     }
 }
