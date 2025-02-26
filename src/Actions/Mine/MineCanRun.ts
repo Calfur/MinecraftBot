@@ -1,6 +1,6 @@
 import Bot from "../../Bot";
 import { SEARCHDISTANCE } from "../../Constants";
-import Factor from "../Factor";
+import Factor from "../../Factors/Factor";
 
 export default class MineCanRun extends Factor<boolean> {
     block: string

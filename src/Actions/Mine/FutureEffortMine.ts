@@ -1,5 +1,5 @@
 import Bot from "../../Bot";
-import Factor from "../Factor";
+import Factor from "../../Factors/Factor";
 
 export default class FutureEffortMine extends Factor<number> {
     block: string

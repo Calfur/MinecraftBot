@@ -1,19 +1,19 @@
-import Action from "../../Action";
-import Collect from "../../Actions/Collect";
-import Craft from "../../Actions/Craft";
-import { DigBlock } from "../../Actions/DigBlock";
-import Bot from "../../Bot";
-import CraftCanRun from "../canRun/CraftCanRun";
-import Factor from "../Factor";
+import Action from "../Action";
+import Collect from "../Actions/Collect/Collect";
+import Craft from "../Actions/Craft/Craft";
+import { DigBlock } from "../Actions/DigBlock";
+import Bot from "../Bot";
+import CraftCanRun from "../Actions/Craft/CraftCanRun";
+import Factor from "./Factor";
 import mineflayer from "mineflayer";
-import FutureEffortCraft from "../FutureEffort/FutureEffortCraft";
-import CurrentEffortCraft from "../CurrentEffort/CurrentEffortCraft";
-import MineCanRun from "../canRun/MineCanRun";
-import FutureEffortMine from "../FutureEffort/FutureEffortMine";
-import CurrentEffortMine from "../CurrentEffort/CurrentEffortMine";
-import CollectCanRun from "../canRun/CollectCanRun";
-import FutureEffortCollect from "../FutureEffort/FutureEffortCollect";
-import CollectCurrentEffort from "../CurrentEffort/CollectCurrentEffort";
+import FutureEffortCraft from "../Actions/Craft/FutureEffortCraft";
+import CurrentEffortCraft from "../Actions/Craft/CurrentEffortCraft";
+import MineCanRun from "../Actions/Mine/MineCanRun";
+import FutureEffortMine from "../Actions/Mine/FutureEffortMine";
+import CurrentEffortMine from "../Actions/Mine/CurrentEffortMine";
+import CollectCanRun from "../Actions/Collect/CollectCanRun";
+import FutureEffortCollect from "../Actions/Collect/FutureEffortCollect";
+import CollectCurrentEffort from "../Actions/Collect/CollectCurrentEffort";
 
 export default class ActionsToOwnItem extends Factor<{action: Action, canRun: boolean, effortFuture: number, effortNow: number}[]>{
     private item: string

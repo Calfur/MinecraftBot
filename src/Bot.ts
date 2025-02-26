@@ -22,8 +22,10 @@ export default class Bot {
 
     this.bot.loadPlugin(pathfinder)
 
-    this.bot.on('spawn', () => {
+    this.bot.on('spawn', async () => {
       this.bot.chat(`/clear ${this.bot.username}`);// clear inventory to reset (mostly for testing purposes)
+
+      await this.bot.waitForTicks(1);
 
       this.bot.on('physicsTick', () => {
         this.tpsScoreboard?.tick();

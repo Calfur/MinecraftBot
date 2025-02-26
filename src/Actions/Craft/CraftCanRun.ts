@@ -1,5 +1,5 @@
 import Bot from "../../Bot";
-import Factor from "../Factor";
+import Factor from "../../Factors/Factor";
 import {Recipe} from "prismarine-recipe";
 
 export default class CraftCanRun extends Factor<boolean> {

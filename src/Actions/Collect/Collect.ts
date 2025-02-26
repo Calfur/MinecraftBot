@@ -1,8 +1,8 @@
 import mineflayer from "mineflayer";
-import Action from "../Action";
+import Action from "../../Action";
 import { Entity } from 'prismarine-entity'
-import Bot from "../Bot";
-import { COLLECTDISTANCE } from "../Constants";
+import Bot from "../../Bot";
+import { COLLECTDISTANCE } from "../../Constants";
 import { goals } from "mineflayer-pathfinder";
 
 export default class Collect extends Action {

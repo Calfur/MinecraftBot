@@ -1,6 +1,6 @@
 import { Recipe } from "prismarine-recipe";
 import Bot from "../../Bot";
-import Factor from "../Factor";
+import Factor from "../../Factors/Factor";
 
 export default class FutureEffortCraft extends Factor<number> {
     recipe: Recipe

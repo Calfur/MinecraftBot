@@ -1,8 +1,8 @@
 import mineflayer from 'mineflayer'
-import Action from '../Action'
+import Action from '../../Action'
 import { Recipe } from 'prismarine-recipe';
-import { REACHDISTANCE } from '../Constants';
-import Bot from '../Bot';
+import { REACHDISTANCE } from '../../Constants';
+import Bot from '../../Bot';
 
 export default class Craft extends Action {
     recipe: Recipe

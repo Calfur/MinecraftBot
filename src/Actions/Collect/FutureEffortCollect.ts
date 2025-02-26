@@ -1,5 +1,5 @@
 import Bot from "../../Bot";
-import Factor from "../Factor";
+import Factor from "../../Factors/Factor";
 
 export default class FutureEffortCollect extends Factor<number> {
     item: string

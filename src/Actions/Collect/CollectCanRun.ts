@@ -1,5 +1,5 @@
 import Bot from "../../Bot";
-import Factor from "../Factor";
+import Factor from "../../Factors/Factor";
 import mineflayer from "mineflayer";
 import { Entity } from 'prismarine-entity'
 
