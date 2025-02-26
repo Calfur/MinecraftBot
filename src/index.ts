@@ -1,19 +1,18 @@
-import Target from "./Target";
-import OwnItem from "./Targets/OwnItem";
+import Action from "./Action";
 import Bot from "./Bot";
-import OwnTool from "./Targets/OwnTool";
+import ActionsToOwnItem from "./Factors/ActionPlan/ActionsToOwnItem";
+import Factor from "./Factors/Factor";
 
 
 const steve = new Bot("Steve");
 
 steve.bot.once('spawn', () => {
-    const initialTargets: Target[] = [
-      new OwnItem('stick', 5),
-      new OwnItem('orange_dye', 1),
-      new OwnTool(steve.bot.registry.blocksByName['dirt']),
+    const initialTargets: Factor<Action[]>[] = [
+      new ActionsToOwnItem('stick', 5),
+      new ActionsToOwnItem('orange_dye', 1),
     ];
     
-    steve.goals.push(...initialTargets);
+    steve.neededActions.push(...initialTargets);
     
     steve.changes.add("TargetCompleteOwnTool:fordirt");
 });

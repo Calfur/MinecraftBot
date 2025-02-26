@@ -7,14 +7,13 @@ import Factor from "./Factors/Factor";
 
 export default class Bot {
   bot: mineflayer.Bot;
-  goals: Factor<Action[]>[] = []; //Factors providing actions which should be done
+  neededActions: Factor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
   cache: { [key: string]: {value: any, factor: Factor<any>} } = {}; //Factor stored to get Factor from id again
-  // not sure if set's make sense (performance, reasonability, etc.)
-  dependents: { [key: string]: Set<string> } = {}; // describes which Factors depend on the Key factor (used to check for factors which need to be recalculated)
-  dependencies: { [key: string]: Set<string> } = {}; // describes which Factors a the Key Factor depends on (used to remove dependencies)
-  changes: Set<string> = new Set<string>();
+  dependents: { [key: string]: Set<string> } = {}; // Factors which depend on the Key factor (used to check for factors which need to be recalculated)
+  dependencies: { [key: string]: Set<string> } = {}; // Factors on which the Key Factor depends on (used to remove dependencies)
+  changes: Set<string> = new Set<string>(); // Factors which need to be recalculated due to assumed changes
 
   constructor(name: string) {
     this.bot = createBot({

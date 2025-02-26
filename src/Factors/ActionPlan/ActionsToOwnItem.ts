@@ -17,6 +17,7 @@ export default class ActionsToOwnItem extends Factor<Action[]>{
     }
 
     calc(bot: Bot): Action[] {
+        // TODO keep path to avoid infinite loop (probably needs to be part of id, maybe more seperation possible)
         const remainingCount = this.count - bot.bot.inventory.count(this.item, null);
 
         if (remainingCount <= 0) return [];
@@ -24,8 +25,6 @@ export default class ActionsToOwnItem extends Factor<Action[]>{
         const actions: Action[] = [];
 
         const recipes = bot.bot.recipesAll(bot.bot.registry.itemsByName[this.item].id, null, true)
-
-        // clear duplicat recipes
 
         recipes.forEach(recipe => {
             actions.push(new Craft(recipe, remainingCount));
