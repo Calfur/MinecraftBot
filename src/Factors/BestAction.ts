@@ -13,12 +13,13 @@ export default class BestAction extends Factor<Action|null> {
         for (const action of bot.neededActions) {
             actions.push(...this.get(action))
 
-
-            //maybe reduce redundant Actions
+            //TODO reduce redundant Actions
         }
         
         //3. start lowest effort action (not cached)
+        const possibleActions = actions.filter(action => action.canRun);
+        possibleActions.sort((a, b) => a.effortNow / a.effortFuture - b.effortNow / b.effortFuture);
 
-        return null;
+        return possibleActions[0].action ?? null;
     }
 }

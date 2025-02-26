@@ -1,7 +1,6 @@
 import mineflayer from "mineflayer";
 import Action from "../Action";
 import { Entity } from 'prismarine-entity'
-import Target from "../Target";
 import Bot from "../Bot";
 import { COLLECTDISTANCE } from "../Constants";
 import { goals } from "mineflayer-pathfinder";
@@ -14,9 +13,9 @@ export default class Collect extends Action {
     this.itemName = itemName;
   }
 
-  getRequirements(bot: mineflayer.Bot): Target[] {
-    return [];
-  }
+  // getRequirements(bot: mineflayer.Bot): Target[] {
+  //   return [];
+  // }
 
   run(bot: Bot): void {
     const closestItem = this.getClosestItem(bot.bot);
@@ -38,15 +37,15 @@ export default class Collect extends Action {
     bot.pathfinder.stop();
   }
 
-  getEffortFuture(bot: Bot): number {
-    return 10000;
-  }
+  // getEffortFuture(bot: Bot): number {
+  //   return 10000;
+  // }
 
-  getEffortNow(bot: mineflayer.Bot): number {
-    const closestItem = this.getClosestItem(bot);
-    if (!closestItem) return Infinity
-    return closestItem.position.distanceTo(bot.entity.position)
-  }
+  // getEffortNow(bot: mineflayer.Bot): number {
+  //   const closestItem = this.getClosestItem(bot);
+  //   if (!closestItem) return Infinity
+  //   return closestItem.position.distanceTo(bot.entity.position)
+  // }
 
   private getClosestItem(bot: mineflayer.Bot): Entity | undefined {
     const entities = Object.values(bot.entities);

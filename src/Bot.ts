@@ -7,7 +7,7 @@ import Factor from "./Factors/Factor";
 
 export default class Bot {
   bot: mineflayer.Bot;
-  neededActions: Factor<Action[]>[] = []; //Factors providing actions which should be done
+  neededActions: Factor<{action: Action, canRun: boolean, effortFuture: number, effortNow: number}[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
   cache: { [key: string]: {value: any, factor: Factor<any>} } = {}; //Factor stored to get Factor from id again
