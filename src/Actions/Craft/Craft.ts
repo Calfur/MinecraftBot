@@ -21,26 +21,7 @@ export default class Craft extends Action {
             bot.bot.craft(this.recipe, this.count)
         }
     }
-
-    // getEffortFuture(bot: Bot): number {
-    //     return 0
-    // }
-
-    // getEffortNow(bot: mineflayer.Bot): number {
-    //     return 0
-    // }
-
-    // getRequirements(bot: mineflayer.Bot): Target[] {
-    //     // if (this.recipe.requiresTable) {
-    //     //     return [new BlockNearby("crafting_table")]
-    //     // }
-    //     var requirements = []
-    //     for (const item of this.recipe.delta.filter(item => item.count < 0)) {
-    //         requirements.push(new OwnItem(bot.registry.items[item.id].name, -item.count * this.count / this.recipe.result.count))
-    //     }
-    //     return requirements
-    // }
-
+    
     abortAction(bot: mineflayer.Bot): void {
         return
     }

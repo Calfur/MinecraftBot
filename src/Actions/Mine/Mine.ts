@@ -1,15 +1,15 @@
-import Action from "../Action"
+import Action from "../../Action"
 import mineflayer from "mineflayer"
-import Bot from "../Bot"
-import { REACHDISTANCE, SEARCHDISTANCE } from "../Constants"
+import Bot from "../../Bot"
+import { REACHDISTANCE, SEARCHDISTANCE } from "../../Constants"
 import { goals } from "mineflayer-pathfinder"
 
-export class DigBlock extends Action {
+export class Mine extends Action {
     block: string
     goal: string
     //TODO maybe allow mining multiple blocks in one Action or let it use multiple actions
     constructor(block: string, goal: string) { //maybe change to Actual Block instance instead of string
-        super("MineBlock" + block);
+        super("Mine" + block);
         this.block = block;
         this.goal = goal;
     }
@@ -39,26 +39,7 @@ export class DigBlock extends Action {
             this.stopped = true
         })
     }
-
-    // getEffortNow(bot: mineflayer.Bot): number {
-    //     // maybe change to only calc varying effort
-    //     const mineBlock = bot.findBlock({ matching: bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
-    //     if (!mineBlock) return Infinity
-    //     const distance = mineBlock.position.distanceTo(bot.entity.position)
-    //     // TODO: depends on tool in hand
-    //     return (distance * 20 / bot.physics.sprintSpeed) + bot.digTime(mineBlock)
-    // }
-
     abortAction(bot: mineflayer.Bot): void {
         bot.stopDigging();
     }
-
-    // getEffortFuture(bot: Bot): number {
-    //     //depends on rarity and hardness of block
-    //     return 200
-    // }
-
-    // getRequirements(bot: mineflayer.Bot): Target[] {
-    //     return [new OwnTool(bot.registry.blocksByName[this.block])]
-    // }
 }

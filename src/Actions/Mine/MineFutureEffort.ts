@@ -13,6 +13,6 @@ export default class MineFutureEffort extends Factor<number> {
 
     protected calc(bot: Bot): number {
         //TODO add Tools, Rarity and hardness
-        return 200
+        return 200 //10 sec
     }
 }

@@ -29,7 +29,7 @@ export default abstract class Factor<T> {
         return bot.cache[this.id]?.value ?? this.recalc(bot);
     }
 
-    recalc(bot: Bot) {
+    recalc(bot: Bot): T {
         this.bot = bot;
 
         // clear dependencies

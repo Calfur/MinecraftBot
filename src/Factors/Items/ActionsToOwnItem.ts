@@ -1,7 +1,7 @@
 import Action from "../../Action";
 import Collect from "../../Actions/Collect/Collect";
 import Craft from "../../Actions/Craft/Craft";
-import { DigBlock } from "../../Actions/DigBlock";
+import { Mine } from "../../Actions/Mine/Mine";
 import Bot from "../../Bot";
 import CraftCanRun from "../../Actions/Craft/CraftCanRun";
 import Factor from "../Factor";
@@ -54,7 +54,7 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
         //could make DigBlock search for blocks dropping this item instead of specific block
         this.blockTypesToMine(bot.bot, this.item).forEach(block => { 
             actions.push({
-                action: new DigBlock(block, this.item),
+                action: new Mine(block, this.item),
                 canRun: this.get(new MineCanRun(block)),
                 effortFuture: this.get(new MineFutureEffort(block, this.item)),
                 effortNow: this.get(new MineCurrentEffort(block))

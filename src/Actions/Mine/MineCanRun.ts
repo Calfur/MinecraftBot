@@ -1,6 +1,6 @@
 import Bot from "../../Bot";
-import { SEARCHDISTANCE } from "../../Constants";
 import Factor from "../../Factors/Factor";
+import ClosestBlock from "./ClosestBlock";
 
 export default class MineCanRun extends Factor<boolean> {
     block: string
@@ -11,7 +11,7 @@ export default class MineCanRun extends Factor<boolean> {
 
     protected calc(bot: Bot): boolean {
         //TODO consider tools
-        const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
+        const mineBlock = this.get(new ClosestBlock(this.block));
 
         return mineBlock !== null
     }

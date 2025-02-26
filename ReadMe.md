@@ -8,3 +8,14 @@
 ## hint performance tracking
 use console.time("key")
 and console.endtime("key")
+
+## improvements on Algorythm
+
+Accuracy of all calculations
+
+importance of possible Actions depending on alterantives (importance = FastestWayEffortFuture / OwnEffortFuture)
+-> include in action sorting (futureEffort / currentEffort * importance: determines Gain from running action now)
+
+Factor calcTime estimation
+
+add importance and %of change to changes for sorting (importance * %change / calcEffort: determines how helpfull a calculation is)

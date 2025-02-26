@@ -1,6 +1,6 @@
 import Bot from "../../Bot";
-import { SEARCHDISTANCE } from "../../Constants";
 import Factor from "../../Factors/Factor";
+import ClosestBlock from "./ClosestBlock";
 
 export default class MineCurrentEffort extends Factor<number> {
     block: string
@@ -10,11 +10,13 @@ export default class MineCurrentEffort extends Factor<number> {
     }
 
     protected calc(bot: Bot): number {
-        // maybe change to only calc varying effort
-        const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
+        const mineBlock = this.get(new ClosestBlock(this.block));
+
         if (!mineBlock) return Infinity
+
         const distance = mineBlock.position.distanceTo(bot.bot.entity.position)
         // TODO: depends on tool in hand
+        
         return (distance * 20 / bot.bot.physics.sprintSpeed) + bot.bot.digTime(mineBlock)
     }
 }
