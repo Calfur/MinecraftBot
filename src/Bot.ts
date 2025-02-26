@@ -40,6 +40,9 @@ export default class Bot {
   }
 
   calcTick() {
+    // console.timeEnd("mineflayer");
+    // console.time("other"); //max registered time: 0.1ms
+
     //1. check if bestAction changed
     const bestAction = new BestAction(this).getValue(this);
 
@@ -52,16 +55,24 @@ export default class Bot {
       
     //5. check for relevant status changes
     if (this.changes.size === 0) { //low priority
+      console.log("reque changes");
       Object.keys(this.cache).filter(factorId => factorId.startsWith("ClosestItemDrop")).forEach(factorId => this.changes.add(factorId));//check for drops
       Object.keys(this.cache).filter(factorId => factorId.startsWith("ClosestBlock")).forEach(factorId => this.changes.add(factorId));//check for blocks
     }
+    // console.timeEnd("other");
 
     //6. do some cache network calculations
-    this.calcChanges(10);
+
+    // console.time("calcChanges"); //often around 80ms
+    this.calcChanges(40);
+    // console.timeEnd("calcChanges");
+
+    // console.time("mineflayer"); //max registered time: 4ms
   }
 
   calcChanges(forMS: number){
     const startTime = Date.now();
+    var changeCount = 0;
     
     while (this.changes.size > 0 && Date.now() - startTime < forMS) {
       const factorId = this.changes.values().next().value ?? ""; // "" should not be possible to reach
@@ -76,7 +87,11 @@ export default class Bot {
       if (this.dependents[factorId]){
         this.dependents[factorId].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
       }
+
+      changeCount++;
     }
+
+    // console.log(`changes: ${changeCount}`);
   }
 
   changeFactor(factor: string, value: any) {
