@@ -1,6 +1,6 @@
 import Action from "./Action";
 import Bot from "./Bot";
-import ActionsToOwnItem from "./Factors/ActionsToOwnItem";
+import ActionsToOwnItem from "./Factors/Items/ActionsToOwnItem";
 import Factor from "./Factors/Factor";
 
 

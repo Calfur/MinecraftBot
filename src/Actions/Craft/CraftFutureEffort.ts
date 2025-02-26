@@ -2,12 +2,12 @@ import { Recipe } from "prismarine-recipe";
 import Bot from "../../Bot";
 import Factor from "../../Factors/Factor";
 
-export default class FutureEffortCraft extends Factor<number> {
+export default class CraftFutureEffort extends Factor<number> {
     recipe: Recipe
     count: number
 
     constructor(recipe: Recipe, count: number = 1) {
-            super("FutureEffortCraft" + recipe.result.id + " " + count)
+            super("CraftFutureEffort" + recipe.result.id + " " + count)
             this.recipe = recipe
             this.count = count
         }

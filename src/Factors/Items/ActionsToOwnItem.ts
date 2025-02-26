@@ -1,19 +1,20 @@
-import Action from "../Action";
-import Collect from "../Actions/Collect/Collect";
-import Craft from "../Actions/Craft/Craft";
-import { DigBlock } from "../Actions/DigBlock";
-import Bot from "../Bot";
-import CraftCanRun from "../Actions/Craft/CraftCanRun";
-import Factor from "./Factor";
+import Action from "../../Action";
+import Collect from "../../Actions/Collect/Collect";
+import Craft from "../../Actions/Craft/Craft";
+import { DigBlock } from "../../Actions/DigBlock";
+import Bot from "../../Bot";
+import CraftCanRun from "../../Actions/Craft/CraftCanRun";
+import Factor from "../Factor";
 import mineflayer from "mineflayer";
-import FutureEffortCraft from "../Actions/Craft/FutureEffortCraft";
-import CurrentEffortCraft from "../Actions/Craft/CurrentEffortCraft";
-import MineCanRun from "../Actions/Mine/MineCanRun";
-import FutureEffortMine from "../Actions/Mine/FutureEffortMine";
-import CurrentEffortMine from "../Actions/Mine/CurrentEffortMine";
-import CollectCanRun from "../Actions/Collect/CollectCanRun";
-import FutureEffortCollect from "../Actions/Collect/FutureEffortCollect";
-import CollectCurrentEffort from "../Actions/Collect/CollectCurrentEffort";
+import CraftFutureEffort from "../../Actions/Craft/CraftFutureEffort";
+import CraftCurrentEffort from "../../Actions/Craft/CraftCurrentEffort";
+import MineCanRun from "../../Actions/Mine/MineCanRun";
+import MineFutureEffort from "../../Actions/Mine/MineFutureEffort";
+import MineCurrentEffort from "../../Actions/Mine/MineCurrentEffort";
+import CollectCanRun from "../../Actions/Collect/CollectCanRun";
+import CollectFutureEffort from "../../Actions/Collect/CollectFutureEffort";
+import CollectCurrentEffort from "../../Actions/Collect/CollectCurrentEffort";
+import ItemCount from "./ItemCount";
 
 export default class ActionsToOwnItem extends Factor<{action: Action, canRun: boolean, effortFuture: number, effortNow: number}[]>{
     private item: string
@@ -27,7 +28,7 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
 
     protected calc(bot: Bot): {action: Action, canRun: boolean, effortFuture: number, effortNow: number}[] {
         // TODO keep path to avoid infinite loop (probably needs to be part of id, maybe more seperation possible)
-        const remainingCount = this.count - bot.bot.inventory.count(this.item, null);
+        const remainingCount = this.count - this.get(new ItemCount(this.item));
 
         if (remainingCount <= 0) return [];
 
@@ -39,8 +40,8 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
             actions.push({
                 action: new Craft(recipe, remainingCount), 
                 canRun: this.get(new CraftCanRun(recipe,this.item)),
-                effortFuture: this.get(new FutureEffortCraft(recipe)),
-                effortNow: this.get(new CurrentEffortCraft(recipe))
+                effortFuture: this.get(new CraftFutureEffort(recipe)),
+                effortNow: this.get(new CraftCurrentEffort(recipe))
             });
 
             // Actions to obtain ingredients
@@ -55,8 +56,8 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
             actions.push({
                 action: new DigBlock(block, this.item),
                 canRun: this.get(new MineCanRun(block)),
-                effortFuture: this.get(new FutureEffortMine(block, this.item)),
-                effortNow: this.get(new CurrentEffortMine(block))
+                effortFuture: this.get(new MineFutureEffort(block, this.item)),
+                effortNow: this.get(new MineCurrentEffort(block))
             });
             //TODO add Actions for tools
         });
@@ -64,7 +65,7 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
         actions.push({
             action: new Collect(this.item),
             canRun: this.get(new CollectCanRun(this.item)),
-            effortFuture: this.get(new FutureEffortCollect(this.item)),
+            effortFuture: this.get(new CollectFutureEffort(this.item)),
             effortNow: this.get(new CollectCurrentEffort(this.item))
         });
 

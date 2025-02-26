@@ -2,10 +2,10 @@ import Bot from "../../Bot";
 import { SEARCHDISTANCE } from "../../Constants";
 import Factor from "../../Factors/Factor";
 
-export default class CurrentEffortMine extends Factor<number> {
+export default class MineCurrentEffort extends Factor<number> {
     block: string
     constructor(block: string) {
-        super("CurrentEffortMine");
+        super("MineCurrentEffort");
         this.block = block
     }
 

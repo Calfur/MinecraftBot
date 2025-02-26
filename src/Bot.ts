@@ -14,6 +14,7 @@ export default class Bot {
   dependents: { [key: string]: Set<string> } = {}; // Factors which depend on the Key factor (used to check for factors which need to be recalculated)
   dependencies: { [key: string]: Set<string> } = {}; // Factors on which the Key Factor depends on (used to remove dependencies)
   changes: Set<string> = new Set<string>(); // Factors which need to be recalculated due to assumed changes
+  ticks: number = 0;
 
   constructor(name: string) {
     this.bot = createBot({
@@ -31,6 +32,7 @@ export default class Bot {
         this.tpsScoreboard?.tick();
   
         this.calcTick();
+        this.ticks++;
       });
 
       this.tpsScoreboard = new TpsScoreboard(this.bot);
@@ -49,7 +51,10 @@ export default class Bot {
     }
       
     //5. check for relevant status changes
-    //TODO
+    if (this.changes.size === 0) { //low priority
+      Object.keys(this.cache).filter(factorId => factorId.startsWith("ClosestItemDrop")).forEach(factorId => this.changes.add(factorId));//check for drops
+      Object.keys(this.cache).filter(factorId => factorId.startsWith("ClosestBlock")).forEach(factorId => this.changes.add(factorId));//check for blocks
+    }
 
     //6. do some cache network calculations
     this.calcChanges(10);

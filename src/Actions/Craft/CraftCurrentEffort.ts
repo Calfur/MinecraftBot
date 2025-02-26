@@ -2,10 +2,10 @@ import Bot from "../../Bot";
 import Factor from "../../Factors/Factor";
 import {Recipe} from "prismarine-recipe";
 
-export default class CurrentEffortCraft extends Factor<number> {
+export default class CraftCurrentEffort extends Factor<number> {
     recipe: Recipe
     constructor(recipe: Recipe) { //TODO maybe change to requires table
-        super("CurrentEffortCraft");
+        super("CraftCurrentEffort");
         this.recipe = recipe
     }
 
