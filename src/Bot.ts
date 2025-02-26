@@ -47,6 +47,7 @@ export default class Bot {
     }
       
     //5. check for relevant status changes
+    //TODO
 
     //6. do some cache network calculations
     this.calcChanges(10);

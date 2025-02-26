@@ -38,7 +38,7 @@ export default class ActionsToOwnItem extends Factor<{action: Action, canRun: bo
         recipes.forEach(recipe => {
             actions.push({
                 action: new Craft(recipe, remainingCount), 
-                canRun: this.get(new CraftCanRun(recipe)),
+                canRun: this.get(new CraftCanRun(recipe,this.item)),
                 effortFuture: this.get(new FutureEffortCraft(recipe)),
                 effortNow: this.get(new CurrentEffortCraft(recipe))
             });
