@@ -63,7 +63,7 @@ export default class Bot {
 
     //6. do some cache network calculations
 
-    // console.time("calcChanges"); //often around 80ms
+    // console.time("calcChanges"); //often around 80ms for 32 range
     this.calcChanges(40);
     // console.timeEnd("calcChanges");
 

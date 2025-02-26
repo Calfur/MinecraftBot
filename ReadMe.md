@@ -19,3 +19,5 @@ importance of possible Actions depending on alterantives (importance = FastestWa
 Factor calcTime estimation
 
 add importance and %of change to changes for sorting (importance * %change / calcEffort: determines how helpfull a calculation is)
+
+maybe add some system to store states like known blocks findblocks -> create multiple entries, -> event 
