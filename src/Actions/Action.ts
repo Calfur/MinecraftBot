@@ -8,12 +8,14 @@ export default abstract class Action {
     canRun: Factor<boolean>
     currentEffort: Factor<number>
     FutureEffort: Factor<number>
+    Dependencies: Factor<Action[]>
     
-    constructor(id: string, canRun: Factor<boolean>, currentEffort: Factor<number>, FutureEffort: Factor<number>) {
+    constructor(id: string, canRun: Factor<boolean>, currentEffort: Factor<number>, FutureEffort: Factor<number>, Dependencies: Factor<Action[]>) {
         this.id = id
         this.canRun = canRun
         this.currentEffort = currentEffort
         this.FutureEffort = FutureEffort
+        this.Dependencies = Dependencies
     }
 
     // Executes the action

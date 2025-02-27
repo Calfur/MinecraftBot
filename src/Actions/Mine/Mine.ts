@@ -6,13 +6,14 @@ import { goals } from "mineflayer-pathfinder"
 import MineCanRun from "./MineCanRun"
 import MineCurrentEffort from "./MineCurrentEffort"
 import MineFutureEffort from "./MineFutureEffort"
+import MineDependencies from "./MineDependencies"
 
 export class Mine extends Action {
     block: string
     goal: string
     //TODO maybe allow mining multiple blocks in one Action or let it use multiple actions
     constructor(block: string, goal: string) { //maybe change to Actual Block instance instead of string
-        super("Mine" + block, new MineCanRun(block), new MineCurrentEffort(block), new MineFutureEffort(block));
+        super("Mine" + block, new MineCanRun(block), new MineCurrentEffort(block), new MineFutureEffort(block), new MineDependencies(block));
         this.block = block;
         this.goal = goal;
     }
@@ -21,6 +22,7 @@ export class Mine extends Action {
         const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
         if (!mineBlock) {
             // explore world
+            this.stopped = true
             return
         }
 
@@ -30,19 +32,17 @@ export class Mine extends Action {
                 this.stopped = true
             }
             //TODO: select proper tool
-            const digPromise = bot.bot.dig(mineBlock, false);
-            
-            digPromise.then(() => this.stopped = true);
-            
-            digPromise.catch(() => { // important to catch promise-errors
-                this.stopped = true
-                bot.bot.chat("Digging failed for block " + mineBlock.name + " at " + mineBlock.position.toString())
-            });
+            bot.bot.dig(mineBlock, false)
+                .then(() => this.stopped = true)
+                .catch(() => { // important to catch promise-errors
+                    this.stopped = true
+                    bot.bot.chat("Digging failed for block " + mineBlock.name + " at " + mineBlock.position.toString())
+                });
         }).catch(() => {
             this.stopped = true
         })
     }
     abortAction(bot: mineflayer.Bot): void {
-        bot.stopDigging();
+        bot.stopDigging(); //throws error
     }
 }

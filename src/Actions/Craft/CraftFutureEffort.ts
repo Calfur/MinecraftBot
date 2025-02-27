@@ -6,7 +6,7 @@ export default class CraftFutureEffort extends Factor<number> {
     recipe: Recipe
 
     constructor(recipe: Recipe) {
-        super("CraftFutureEffort" + recipe.result.id)
+        super("CraftFutureEffort" + recipe.delta.map(item => item.count.toString() + "x" + item.id.toString()).join(","))
         this.recipe = recipe
     }
 

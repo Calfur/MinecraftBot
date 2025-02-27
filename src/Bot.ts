@@ -48,7 +48,7 @@ export default class Bot {
     //1. check if bestAction changed
     const bestAction = new BestAction(this).getValue(this);
 
-    if (bestAction !== this.currentAction) {
+    if (bestAction?.id !== this.currentAction?.id) {
       this.currentAction?.stop(this.bot);
       this.currentAction = bestAction;
       if (this.currentAction) this.currentAction.run(this);
@@ -57,9 +57,9 @@ export default class Bot {
       
     //5. check for relevant status changes
     if (this.changes.size === 0) { //low priority
-      console.log("reque changes");
-      Object.keys(this.cache).filter(factorId => factorId.startsWith("ClosestItemDrop")).forEach(factorId => this.changes.add(factorId));//check for drops
-      Object.keys(this.cache).filter(factorId => factorId.startsWith("ClosestBlock")).forEach(factorId => this.changes.add(factorId));//check for blocks
+      this.addChange("ClosestItemDrop")//check for drops
+      this.addChange("ClosestBlock")//check for blocks
+      this.addChange("ItemCount")//check for items in inventory
     }
     // console.timeEnd("other");
 
@@ -74,7 +74,6 @@ export default class Bot {
 
   calcChanges(forMS: number){
     const startTime = Date.now();
-    var changeCount = 0;
     
     while (this.changes.size > 0 && Date.now() - startTime < forMS) {
       const factorId = this.changes.values().next().value ?? ""; // "" should not be possible to reach
@@ -89,17 +88,10 @@ export default class Bot {
       if (this.dependents[factorId]){
         this.dependents[factorId].forEach(dependent => this.changes.add(dependent)); // add dependents to changes
       }
-
-      changeCount++;
     }
-
-    // console.log(`changes: ${changeCount}`);
   }
 
-  changeFactor(factor: string, value: any) {
-    this.cache[factor].value = value;
-    if (this.dependents[factor]) {
-      this.dependents[factor].forEach(dependent => this.changes.add(dependent)); //also update dependents
-    }
+  addChange(startWith: string) {
+    Object.keys(this.cache).filter(factorId => factorId.startsWith(startWith)).forEach(factorId => this.changes.add(factorId));
   }
 }

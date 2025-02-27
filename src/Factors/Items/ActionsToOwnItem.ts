@@ -33,27 +33,26 @@ export default class ActionsToOwnItem extends Factor<Action[]>{
 
         if (remainingCount <= 0) return [];
 
+        const directActions: Action[] = [];
         const actions: Action[] = [];
-
+        
         const recipes = bot.bot.recipesAll(bot.bot.registry.itemsByName[this.item].id, null, true)
-
         recipes.forEach(recipe => {
-            actions.push(new Craft(recipe));
-
-            // Actions to obtain ingredients 
-            for (const item of recipe.delta.filter(item => item.count < 0)) {
-                const actionsForIngredients = this.get(new ActionsToOwnItem(bot.bot.registry.items[item.id].name, remainingCount));
-                actions.push(... actionsForIngredients);
-            }
+            directActions.push(new Craft(recipe));
         });
 
         //could make DigBlock search for blocks dropping this item instead of specific block
         this.blockTypesToMine(bot.bot, this.item).forEach(block => { 
-            actions.push(new Mine(block, this.item));
-            //TODO add Actions for tools
+            directActions.push(new Mine(block, this.item));
         });
 
-        actions.push(new Collect(this.item));
+        directActions.push(new Collect(this.item));
+
+        //Add Dependencies
+        actions.push(...directActions);
+        for (const action of directActions) {
+            actions.push(...this.get(action.Dependencies));
+        }
 
         return actions;
     }

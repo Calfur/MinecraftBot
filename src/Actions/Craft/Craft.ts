@@ -6,12 +6,13 @@ import Bot from '../../Bot';
 import CraftCanRun from './CraftCanRun';
 import CraftCurrentEffort from './CraftCurrentEffort';
 import CraftFutureEffort from './CraftFutureEffort';
+import CraftDependencies from './CraftDependencies';
 
 export default class Craft extends Action { //currently designed to only run it once
     recipe: Recipe
     
     constructor(recipe: Recipe) {
-        super("Craft" + recipe.result.id, new CraftCanRun(recipe), new CraftCurrentEffort(recipe), new CraftFutureEffort(recipe))
+        super("Craft" + recipe.delta.map(item => item.count.toString() + "x" + item.id.toString()).join(","), new CraftCanRun(recipe), new CraftCurrentEffort(recipe), new CraftFutureEffort(recipe), new CraftDependencies(recipe))
         this.recipe = recipe
     }
     run(bot: Bot): void {

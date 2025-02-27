@@ -7,12 +7,13 @@ import { goals } from "mineflayer-pathfinder";
 import CollectCanRun from "./CollectCanRun";
 import CollectCurrentEffort from "./CollectCurrentEffort";
 import CollectFutureEffort from "./CollectFutureEffort";
+import CollectDependencies from "./CollectDependencies";
 
 export default class Collect extends Action {
   private item: string;
 
   constructor(item: string) {
-    super("Collect" + item, new CollectCanRun(item), new CollectCurrentEffort(item), new CollectFutureEffort(item));
+    super("Collect" + item, new CollectCanRun(item), new CollectCurrentEffort(item), new CollectFutureEffort(item), new CollectDependencies(item));
     this.item = item;
   }
 

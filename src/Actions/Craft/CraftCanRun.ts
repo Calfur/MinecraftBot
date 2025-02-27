@@ -5,7 +5,7 @@ import {Recipe} from "prismarine-recipe";
 export default class CraftCanRun extends Factor<boolean> {
     recipe: Recipe
     constructor(recipe: Recipe) {
-        super("CraftCanRun"+recipe.result.id); //get name
+        super("CraftCanRun"+recipe.delta.map(item => item.count.toString() + "x" + item.id.toString()).join(",")); //get name
         this.recipe = recipe
     }
 
