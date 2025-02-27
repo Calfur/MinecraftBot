@@ -9,7 +9,7 @@ const steve = new Bot("Steve");
 steve.bot.once('spawn', () => {
     const initialTargets: Factor<Action[]>[] = [
       // new ActionsToOwnItem('stick', 5),
-      new ActionsToOwnItem('apple', 1),
+      new ActionsToOwnItem('stick', 1),
     ];
     
     steve.neededActions.push(...initialTargets);

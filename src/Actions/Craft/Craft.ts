@@ -12,7 +12,7 @@ export default class Craft extends Action { //currently designed to only run it 
     recipe: Recipe
     
     constructor(recipe: Recipe) {
-        super("Craft" + recipe.delta.map(item => item.count.toString() + "x" + item.id.toString()).join(","), new CraftCanRun(recipe), new CraftCurrentEffort(recipe), new CraftFutureEffort(recipe), new CraftDependencies(recipe))
+        super("Craft" + recipe.delta.map(item => -item.count.toString() + "x" + item.id.toString()).join(","), new CraftCanRun(recipe), new CraftCurrentEffort(recipe), new CraftFutureEffort(recipe), new CraftDependencies(recipe))
         this.recipe = recipe
     }
     run(bot: Bot): void {
@@ -20,9 +20,13 @@ export default class Craft extends Action { //currently designed to only run it 
         if (this.recipe.requiresTable) {
             const crafting_table = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName["crafting_table"].id, maxDistance: REACHDISTANCE })
             if (!crafting_table) return
-            bot.bot.craft(this.recipe,1, crafting_table)
+            bot.bot.craft(this.recipe,1, crafting_table).catch(() => {
+                console.log("failed to craft")
+            })
         } else {
-            bot.bot.craft(this.recipe,1)
+            bot.bot.craft(this.recipe,1).catch(() => {
+                console.log("failed to craft")
+            })
         }
     }
     

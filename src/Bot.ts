@@ -24,7 +24,6 @@ export default class Bot {
     this.bot.loadPlugin(pathfinder)
 
     this.bot.on('spawn', async () => {
-      this.bot.chat(`/clear ${this.bot.username}`);// clear inventory to reset (mostly for testing purposes)
 
       await this.bot.waitForTicks(1);
 
@@ -66,7 +65,7 @@ export default class Bot {
     //6. do some cache network calculations
 
     // console.time("calcChanges"); //often around 80ms for 32 range
-    this.calcChanges(40);
+    this.calcChanges(10);
     // console.timeEnd("calcChanges");
 
     // console.time("mineflayer"); //max registered time: 4ms

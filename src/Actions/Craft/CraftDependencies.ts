@@ -8,7 +8,7 @@ export default class CraftDependencies extends Factor<Action[]> {
     recipe: Recipe
 
     constructor(recipe: Recipe) {
-        super("CraftDependencies" + recipe.delta.map(item => item.count.toString() + "x" + item.id.toString()).join(","))
+        super("CraftDependencies" + recipe.delta.map(item => -item.count.toString() + "x" + item.id.toString()).join(","))
         this.recipe = recipe
     }
 
