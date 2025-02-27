@@ -12,6 +12,7 @@ export default class ItemCount extends Factor<number> {
     }
 
     protected calc(bot: Bot): number {
-        return bot.bot.inventory.count(this.item, null)
+        const count = bot.bot.inventory.count(this.item, null)
+        return count
     }
 }
