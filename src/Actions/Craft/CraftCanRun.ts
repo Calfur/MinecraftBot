@@ -4,8 +4,8 @@ import {Recipe} from "prismarine-recipe";
 
 export default class CraftCanRun extends Factor<boolean> {
     recipe: Recipe
-    constructor(recipe: Recipe, goal: string) {
-        super("CraftCanRun"+goal);
+    constructor(recipe: Recipe) {
+        super("CraftCanRun"+recipe.result.id); //get name
         this.recipe = recipe
     }
 

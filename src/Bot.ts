@@ -1,13 +1,13 @@
 import mineflayer, { createBot } from "mineflayer";
 import { pathfinder } from "mineflayer-pathfinder";
-import Action from "./Action";
+import Action from "./Actions/Action";
 import TpsScoreboard from "./TpsScoreboard";
 import BestAction from "./Factors/BestAction";
 import Factor from "./Factors/Factor";
 
 export default class Bot {
   bot: mineflayer.Bot;
-  neededActions: Factor<{action: Action, canRun: boolean, effortFuture: number, effortNow: number}[]>[] = []; //Factors providing actions which should be done
+  neededActions: Factor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
   cache: { [key: string]: {value: any, factor: Factor<any>} } = {}; //Factor stored to get Factor from id again
@@ -42,6 +42,8 @@ export default class Bot {
   calcTick() {
     // console.timeEnd("mineflayer");
     // console.time("other"); //max registered time: 0.1ms
+
+    if (this.currentAction?.stopped) this.currentAction = null;
 
     //1. check if bestAction changed
     const bestAction = new BestAction(this).getValue(this);

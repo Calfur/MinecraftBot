@@ -1,15 +1,18 @@
-import Action from "../../Action"
+import Action from "../Action"
 import mineflayer from "mineflayer"
 import Bot from "../../Bot"
 import { REACHDISTANCE, SEARCHDISTANCE } from "../../Constants"
 import { goals } from "mineflayer-pathfinder"
+import MineCanRun from "./MineCanRun"
+import MineCurrentEffort from "./MineCurrentEffort"
+import MineFutureEffort from "./MineFutureEffort"
 
 export class Mine extends Action {
     block: string
     goal: string
     //TODO maybe allow mining multiple blocks in one Action or let it use multiple actions
     constructor(block: string, goal: string) { //maybe change to Actual Block instance instead of string
-        super("Mine" + block);
+        super("Mine" + block, new MineCanRun(block), new MineCurrentEffort(block), new MineFutureEffort(block));
         this.block = block;
         this.goal = goal;
     }
