@@ -9,7 +9,7 @@ export default class MineFutureEffort extends Factor<number> {
         this.block = block;
     }
 
-    protected calc(bot: Bot): number {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
         //TODO add Tools, Rarity and hardness
         return 200 //10 sec
     }

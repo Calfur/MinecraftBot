@@ -9,8 +9,8 @@ export default class MineCurrentEffort extends Factor<number> {
         this.block = block
     }
 
-    protected calc(bot: Bot): number {
-        const mineBlock = this.get(new ClosestBlock(this.block));
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
+        const mineBlock = get(new ClosestBlock(this.block));
 
         if (!mineBlock) return Infinity
 

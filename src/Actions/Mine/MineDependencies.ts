@@ -10,7 +10,7 @@ export default class MineDependencies extends Factor<Action[]> {
         this.block = block
     }
 
-    protected calc(bot: Bot): Action[] {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): Action[] {
         //TODO add Actions for tools
         return []
     }

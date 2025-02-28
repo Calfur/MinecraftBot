@@ -17,9 +17,9 @@ export default class ActionsToOwnItem extends Factor<Action[]>{
         this.count = count
     }
 
-    protected calc(bot: Bot): Action[] {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): Action[] {
         // TODO keep path to avoid infinite loop (probably needs to be part of id, maybe more seperation possible) //issue if 2 goals have opposit paths
-        const remainingCount = this.count - this.get(new ItemCount(this.item));
+        const remainingCount = this.count - get(new ItemCount(this.item));
 
         if (remainingCount <= 0) return [];
 
@@ -41,7 +41,7 @@ export default class ActionsToOwnItem extends Factor<Action[]>{
         //Add Dependencies
         actions.push(...directActions);
         for (const action of directActions) {
-            actions.push(...this.get(action.Dependencies));
+            actions.push(...get(action.Dependencies));
         }
 
         return actions;

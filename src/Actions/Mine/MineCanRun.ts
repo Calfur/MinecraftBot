@@ -9,9 +9,9 @@ export default class MineCanRun extends Factor<boolean> {
         this.block = block
     }
 
-    protected calc(bot: Bot): boolean {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): boolean {
         //TODO consider tools
-        const mineBlock = this.get(new ClosestBlock(this.block));
+        const mineBlock = get(new ClosestBlock(this.block));
 
         return mineBlock !== null
     }

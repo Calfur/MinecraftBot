@@ -1,4 +1,5 @@
 import Bot from "../Bot";
+import mineflayer from "mineflayer"
 
 export default abstract class Factor<T> {
     id: string
@@ -9,7 +10,7 @@ export default abstract class Factor<T> {
         this.id = id;
     }
 
-    protected get<U>(factor: Factor<U>): U {
+    private get<U>(factor: Factor<U>): U {
         if (!this.bot) throw new Error("No cache defined");
 
         if (!this.bot.dependents[factor.id]) {
@@ -42,12 +43,12 @@ export default abstract class Factor<T> {
         bot.dependencies[this.id] = new Set();
 
         // calc Value
-        const value = this.calc(bot);
+        const value = this.calc(bot, this.get.bind(this));
         bot.cache[this.id] = {value: value, factor: this};
 
         this.bot = null;
         return value;
     }
 
-    protected abstract calc(bot: Bot): T
+    protected abstract calc(bot: Bot, get: (factor: Factor<any>) => any): T
 }

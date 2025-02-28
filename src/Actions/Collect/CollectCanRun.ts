@@ -9,7 +9,7 @@ export default class CollectCanRun extends Factor<boolean> {
         this.item = item
     }
 
-    protected calc(bot: Bot): boolean {
-        return this.get(new ClosestItemDrop(this.item)) !== null
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): boolean {
+        return get(new ClosestItemDrop(this.item)) !== null
     }
 }

@@ -45,7 +45,7 @@ export default class Bot {
     if (this.currentAction?.stopped) this.currentAction = null;
 
     //1. check if bestAction changed
-    const bestAction = new BestAction(this).getValue(this);
+    const bestAction = new BestAction().getValue(this);
 
     if (bestAction?.id !== this.currentAction?.id) {
       this.currentAction?.stop(this.bot);

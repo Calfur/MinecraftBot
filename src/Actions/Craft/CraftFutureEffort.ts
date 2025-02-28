@@ -10,7 +10,7 @@ export default class CraftFutureEffort extends Factor<number> {
         this.recipe = recipe
     }
 
-    protected calc(bot: Bot): number {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
         if (this.recipe.requiresTable) {
             // return effort have placed crafting table
         }

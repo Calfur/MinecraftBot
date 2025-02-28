@@ -12,10 +12,10 @@ export default class CraftDependencies extends Factor<Action[]> {
         this.recipe = recipe
     }
 
-    calc(bot: Bot): Action[] {
+    calc(bot: Bot, get: (factor: Factor<any>) => any): Action[] {
         var actions = []
         for (const item of this.recipe.delta.filter(item => item.count < 0)) {
-            const actionsForIngredients = this.get(new ActionsToOwnItem(bot.bot.registry.items[item.id].name, -item.count));
+            const actionsForIngredients = get(new ActionsToOwnItem(bot.bot.registry.items[item.id].name, -item.count));
             actions.push(... actionsForIngredients);
         }
         return actions

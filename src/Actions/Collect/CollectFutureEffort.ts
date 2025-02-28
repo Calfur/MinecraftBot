@@ -9,7 +9,7 @@ export default class CollectFutureEffort extends Factor<number> {
         this.item = item
     }
 
-    protected calc(bot: Bot): number {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
         return 10000;
     }
 }

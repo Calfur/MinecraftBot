@@ -11,7 +11,7 @@ export default class ItemCount extends Factor<number> {
         this.count = count
     }
 
-    protected calc(bot: Bot): number {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
         const count = bot.bot.inventory.count(bot.bot.registry.itemsByName[this.item].id, null);
         return count
     }

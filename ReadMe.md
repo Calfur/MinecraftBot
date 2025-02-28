@@ -11,13 +11,15 @@ and console.endtime("key")
 
 ## improvements on Algorythm
 
-Accuracy of all calculations
+- Accuracy of all calculations
 
-importance of possible Actions depending on alterantives (importance = FastestWayEffortFuture / OwnEffortFuture)
--> include in action sorting (futureEffort / currentEffort * importance: determines Gain from running action now)
+- importance of possible Actions depending on alterantives (importance = FastestWayEffortFuture / OwnEffortFuture)
+  -> include in action sorting (futureEffort / currentEffort * importance: determines Gain from running action now)
 
-Factor calcTime estimation
+- Factor calcTime estimation
 
-add importance and %of change to changes for sorting (importance * %change / calcEffort: determines how helpfull a calculation is)
+- add importance and %of change to changes for sorting (importance * %change / calcEffort: determines how helpfull a calculation is)
 
-maybe add some system to store states like known blocks findblocks -> create multiple entries, -> event 
+- maybe add some system to store states like known blocks findblocks -> create multiple entries, -> event 
+
+- maybe put future effort estimation on dependency level, like future effortot obtain in any way instead of for each action
