@@ -6,15 +6,14 @@ import BestAction from "./Factors/BestAction";
 import MCFactor from "./Factors/MCFactor";
 import FactorCache from "./Factors/FactorCache";
 
-export default class Bot extends FactorCache {
+export default class Bot {
   bot: mineflayer.Bot;
   neededActions: MCFactor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
-  ticks: number = 0;
+  cache: FactorCache = new FactorCache();
 
   constructor(name: string) {
-    super()
     this.bot = createBot({
       username: name,
     })
@@ -29,7 +28,6 @@ export default class Bot extends FactorCache {
         this.tpsScoreboard?.tick();
   
         this.calcTick();
-        this.ticks++;
       });
 
       this.tpsScoreboard = new TpsScoreboard(this.bot);
@@ -43,7 +41,7 @@ export default class Bot extends FactorCache {
     if (this.currentAction?.stopped) this.currentAction = null;
 
     //1. check if bestAction changed
-    const bestAction = new BestAction().getValue(this);
+    const bestAction = new BestAction().getValue(this.cache, this);
 
     if (bestAction?.id !== this.currentAction?.id) {
       this.currentAction?.stop(this.bot);
@@ -53,17 +51,17 @@ export default class Bot extends FactorCache {
     }
       
     //5. check for relevant status changes
-    if (this.changes.size === 0) { //low priority
-      this.addChange("ClosestItemDrop")//check for drops
-      this.addChange("ClosestBlock")//check for blocks
-      this.addChange("ItemCount")//check for items in inventory
+    if (this.cache.changes.size === 0) { //low priority
+      this.cache.addChange("ClosestItemDrop")//check for drops
+      this.cache.addChange("ClosestBlock")//check for blocks
+      this.cache.addChange("ItemCount")//check for items in inventory
     }
     // console.timeEnd("other");
 
     //6. do some cache network calculations
 
     // console.time("calcChanges"); //often around 80ms for 32 range
-    this.calcChanges(10);
+    this.cache.calcChanges(10,this);
     // console.timeEnd("calcChanges");
 
     // console.time("mineflayer"); //max registered time: 4ms

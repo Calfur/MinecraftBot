@@ -1,12 +1,12 @@
 import Factor from "./Factor";
 
 export default class FactorCache {
-    cache: { [key: string]: {value: any, factor: Factor<any>} } = {}; //Factor stored to get Factor from id again
+    cache: { [key: string]: {value: any, factor: Factor<any,any>} } = {}; //Factor stored to get Factor from id again
     dependents: { [key: string]: Set<string> } = {}; // Factors which depend on the Key factor (used to check for factors which need to be recalculated)
     dependencies: { [key: string]: Set<string> } = {}; // Factors on which the Key Factor depends on (used to remove dependencies)
     changes: Set<string> = new Set<string>(); // Factors which need to be recalculated due to assumed changes
 
-    calcChanges(forMS: number){
+    calcChanges(forMS: number, data: any) {
         const startTime = Date.now();
         
         while (this.changes.size > 0 && Date.now() - startTime < forMS) {
@@ -16,7 +16,7 @@ export default class FactorCache {
             const factor = this.cache[factorId].factor;
             if (!factor) continue;
         
-            factor.recalc(this);
+            factor.recalc(this, data);
         
             //TODO only change dependents if the value is diffrent
             if (this.dependents[factorId]){
