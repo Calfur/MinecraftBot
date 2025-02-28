@@ -1,4 +1,3 @@
-import Bot from "../Bot";
 import FactorCache from "./FactorCache";
 
 export default abstract class Factor<T> {
@@ -10,7 +9,7 @@ export default abstract class Factor<T> {
         this.id = id;
     }
 
-    private get<U>(factor: Factor<U>): U {
+    private getFactor<U>(factor: Factor<U>): U {
         if (!this.cache) throw new Error("No cache defined");
 
         if (!this.cache.dependents[factor.id]) {
@@ -43,7 +42,7 @@ export default abstract class Factor<T> {
         cache.dependencies[this.id] = new Set();
 
         // calc Value
-        const value = this.calc(cache, this.get.bind(this));
+        const value = this.calc(cache, this.getFactor.bind(this));
         cache.cache[this.id] = {value: value, factor: this};
 
         this.cache = null;

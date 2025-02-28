@@ -6,7 +6,7 @@ import BestAction from "./Factors/BestAction";
 import MCFactor from "./Factors/MCFactor";
 import FactorCache from "./Factors/FactorCache";
 
-export default class Bot extends FactorCache{
+export default class Bot extends FactorCache {
   bot: mineflayer.Bot;
   neededActions: MCFactor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
