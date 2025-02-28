@@ -9,7 +9,7 @@ export default class CollectDependencies extends Factor<Action[]> {
         this.item = item
     }
 
-    calc(bot: Bot): Action[] {
+    protected calc(bot: Bot): Action[] {
         return []
     }
 }

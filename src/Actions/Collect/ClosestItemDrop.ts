@@ -9,8 +9,7 @@ export default class ClosestItemDrop extends Factor<Entity | null> {
         this.item = item;
     }
     
-
-    calc(bot: Bot): Entity | null {
+    protected calc(bot: Bot): Entity | null {
         const entities = Object.values(bot.bot.entities);
         const itemDrops = entities.filter(entity => entity.type === 'other' && entity.entityType === 55)
         const itemId = bot.bot.registry.itemsByName[this.item as string].id
