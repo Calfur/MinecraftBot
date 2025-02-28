@@ -1,7 +1,7 @@
 import Bot from "../../Bot";
-import Factor from "../Factor";
+import MCFactor from "../MCFactor";
 
-export default class ItemCount extends Factor<number> {
+export default class ItemCount extends MCFactor<number> {
     item: string
     count: number
 
@@ -11,7 +11,7 @@ export default class ItemCount extends Factor<number> {
         this.count = count
     }
 
-    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
+    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): number {
         const count = bot.bot.inventory.count(bot.bot.registry.itemsByName[this.item].id, null);
         return count
     }

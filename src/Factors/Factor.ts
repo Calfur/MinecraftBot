@@ -1,9 +1,9 @@
 import Bot from "../Bot";
-import mineflayer from "mineflayer"
+import FactorCache from "./FactorCache";
 
 export default abstract class Factor<T> {
     id: string
-    bot: Bot | null = null // temporary storage of cache during calculation
+    cache: FactorCache | null = null // temporary storage of cache during calculation
     //TODO maybe add some libs like items/blocks/recipes here for easier use
 
     constructor(id: string) {
@@ -11,44 +11,44 @@ export default abstract class Factor<T> {
     }
 
     private get<U>(factor: Factor<U>): U {
-        if (!this.bot) throw new Error("No cache defined");
+        if (!this.cache) throw new Error("No cache defined");
 
-        if (!this.bot.dependents[factor.id]) {
-            this.bot.dependents[factor.id] = new Set();
+        if (!this.cache.dependents[factor.id]) {
+            this.cache.dependents[factor.id] = new Set();
         }
-        this.bot.dependents[factor.id].add(this.id); // register this factor as dependent
+        this.cache.dependents[factor.id].add(this.id); // register this factor as dependent
 
-        if (!this.bot.dependencies[this.id]) {
-            this.bot.dependencies[this.id] = new Set();
+        if (!this.cache.dependencies[this.id]) {
+            this.cache.dependencies[this.id] = new Set();
         }
-        this.bot.dependencies[this.id].add(factor.id); //store which factors this factor depends on
+        this.cache.dependencies[this.id].add(factor.id); //store which factors this factor depends on
 
-        return factor.getValue(this.bot);
+        return factor.getValue(this.cache);
     }
 
-    getValue(bot: Bot): T {
-        return bot.cache[this.id]?.value ?? this.recalc(bot);
+    getValue(cache: FactorCache): T {
+        return cache.cache[this.id]?.value ?? this.recalc(cache);
     }
 
-    recalc(bot: Bot): T {
-        this.bot = bot;
+    recalc(cache: FactorCache): T {
+        this.cache = cache;
 
         // clear dependencies
-        if(bot.dependencies[this.id]){
-            for (const dependency of bot.dependencies[this.id]) {
-                bot.dependents[dependency].delete(this.id); // delete previously registered dependencies
+        if(cache.dependencies[this.id]){
+            for (const dependency of cache.dependencies[this.id]) {
+                cache.dependents[dependency].delete(this.id); // delete previously registered dependencies
             }
         }
 
-        bot.dependencies[this.id] = new Set();
+        cache.dependencies[this.id] = new Set();
 
         // calc Value
-        const value = this.calc(bot, this.get.bind(this));
-        bot.cache[this.id] = {value: value, factor: this};
+        const value = this.calc(cache, this.get.bind(this));
+        cache.cache[this.id] = {value: value, factor: this};
 
-        this.bot = null;
+        this.cache = null;
         return value;
     }
 
-    protected abstract calc(bot: Bot, get: (factor: Factor<any>) => any): T
+    protected abstract calc(bot: FactorCache, get: (factor: Factor<any>) => any): T
 }

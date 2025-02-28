@@ -1,7 +1,7 @@
 import Bot from "../../Bot";
-import Factor from "../../Factors/Factor";
+import MCFactor from "../../Factors/MCFactor";
 
-export default class CollectFutureEffort extends Factor<number> {
+export default class CollectFutureEffort extends MCFactor<number> {
     item: string
 
     constructor(item: string) {
@@ -9,7 +9,7 @@ export default class CollectFutureEffort extends Factor<number> {
         this.item = item
     }
 
-    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
+    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): number {
         return 10000;
     }
 }

@@ -1,8 +1,8 @@
 import { Recipe } from "prismarine-recipe";
 import Bot from "../../Bot";
-import Factor from "../../Factors/Factor";
+import MCFactor from "../../Factors/MCFactor";
 
-export default class CraftFutureEffort extends Factor<number> {
+export default class CraftFutureEffort extends MCFactor<number> {
     recipe: Recipe
 
     constructor(recipe: Recipe) {
@@ -10,7 +10,7 @@ export default class CraftFutureEffort extends Factor<number> {
         this.recipe = recipe
     }
 
-    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
+    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): number {
         if (this.recipe.requiresTable) {
             // return effort have placed crafting table
         }

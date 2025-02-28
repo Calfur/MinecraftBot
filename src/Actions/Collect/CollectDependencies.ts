@@ -1,8 +1,8 @@
 import Bot from "../../Bot";
-import Factor from "../../Factors/Factor";
+import MCFactor from "../../Factors/MCFactor";
 import Action from "../Action";
 
-export default class CollectDependencies extends Factor<Action[]> {
+export default class CollectDependencies extends MCFactor<Action[]> {
     item: string
     constructor(item: string) {
         super("CollectDependencies" + item);

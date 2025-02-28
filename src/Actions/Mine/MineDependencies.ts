@@ -1,8 +1,8 @@
 import Bot from "../../Bot";
-import Factor from "../../Factors/Factor";
+import MCFactor from "../../Factors/MCFactor";
 import Action from "../Action";
 
-export default class MineDependencies extends Factor<Action[]> {
+export default class MineDependencies extends MCFactor<Action[]> {
     block: string
 
     constructor(block: string) {
@@ -10,7 +10,7 @@ export default class MineDependencies extends Factor<Action[]> {
         this.block = block
     }
 
-    protected calc(bot: Bot, get: (factor: Factor<any>) => any): Action[] {
+    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): Action[] {
         //TODO add Actions for tools
         return []
     }

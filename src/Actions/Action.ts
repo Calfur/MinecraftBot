@@ -1,16 +1,16 @@
 import mineflayer from "mineflayer"
 import Bot from "../Bot"
-import Factor from "../Factors/Factor"
+import MCFactor from "../Factors/MCFactor"
 
 export default abstract class Action {
     id: string
     stopped = false
-    canRun: Factor<boolean>
-    currentEffort: Factor<number>
-    FutureEffort: Factor<number>
-    Dependencies: Factor<Action[]>
+    canRun: MCFactor<boolean>
+    currentEffort: MCFactor<number>
+    FutureEffort: MCFactor<number>
+    Dependencies: MCFactor<Action[]>
     
-    constructor(id: string, canRun: Factor<boolean>, currentEffort: Factor<number>, FutureEffort: Factor<number>, Dependencies: Factor<Action[]>) {
+    constructor(id: string, canRun: MCFactor<boolean>, currentEffort: MCFactor<number>, FutureEffort: MCFactor<number>, Dependencies: MCFactor<Action[]>) {
         this.id = id
         this.canRun = canRun
         this.currentEffort = currentEffort

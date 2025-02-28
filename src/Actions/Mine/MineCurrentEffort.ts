@@ -1,15 +1,15 @@
 import Bot from "../../Bot";
-import Factor from "../../Factors/Factor";
+import MCFactor from "../../Factors/MCFactor";
 import ClosestBlock from "./ClosestBlock";
 
-export default class MineCurrentEffort extends Factor<number> {
+export default class MineCurrentEffort extends MCFactor<number> {
     block: string
     constructor(block: string) {
         super("MineCurrentEffort");
         this.block = block
     }
 
-    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
+    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): number {
         const mineBlock = get(new ClosestBlock(this.block));
 
         if (!mineBlock) return Infinity
