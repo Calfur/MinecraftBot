@@ -21,11 +21,11 @@ export default class Craft extends Action { //currently designed to only run it 
             const crafting_table = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName["crafting_table"].id, maxDistance: REACHDISTANCE })
             if (!crafting_table) return
             bot.bot.craft(this.recipe,1, crafting_table).catch(() => {
-                console.log("failed to craft")
+                this.fail(bot, "failed to craft")
             })
         } else {
             bot.bot.craft(this.recipe,1).catch(() => {
-                console.log("failed to craft")
+                this.fail(bot, "failed to craft")
             })
         }
     }

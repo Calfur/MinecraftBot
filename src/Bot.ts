@@ -7,15 +7,18 @@ import Factor from "./Factors/Factor";
 import FactorCache from "./Factors/FactorCache";
 import EventEmitter from "events";
 
-export default class Bot {
+export default class Bot extends EventEmitter {
   bot: mineflayer.Bot;
   neededActions: Factor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
   cache: FactorCache = new FactorCache();
-  events = new EventEmitter();
+  active: boolean;
 
-  constructor(name: string) {
+  constructor(name: string, active: boolean = true) {
+    super();
+    this.active = active;
+
     this.bot = createBot({
       username: name,
     })
@@ -27,8 +30,9 @@ export default class Bot {
       await this.bot.waitForTicks(1); // helps for loading some things
 
       this.bot.on('physicsTick', () => {
+        if(!this.active) return
         this.tpsScoreboard?.tick();
-  
+        
         this.calcTick();
       });
 
@@ -36,7 +40,7 @@ export default class Bot {
     });
 
     this.bot.once('end', () => {
-      this.events.emit('end');
+      this.emit('end');
     });
   }
 
@@ -48,7 +52,7 @@ export default class Bot {
 
     //1. check if bestAction changed
     const bestAction = new BestAction().getValue(this.cache, this);
-    if (bestAction === null) this.events.emit("finishedActions");
+    if (bestAction === null) this.emit("finishedActions");
 
     if (bestAction?.id !== this.currentAction?.id) {
       this.currentAction?.stop(this.bot);
@@ -73,4 +77,6 @@ export default class Bot {
 
     // console.time("mineflayer"); //max registered time: 4ms
   }
+
+
 }

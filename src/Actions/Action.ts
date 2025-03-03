@@ -29,6 +29,11 @@ export default abstract class Action {
         this.stopped = true
     }
 
+    protected fail(bot: Bot, reason: string): void {
+        this.stopped = true
+        bot.emit("actionFailed", this.id, reason)
+    }
+
     toJSON(): any {
         return this.id
     }

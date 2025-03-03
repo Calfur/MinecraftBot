@@ -28,7 +28,7 @@ export default class Collect extends Action {
     bot.bot.pathfinder.goto(new goals.GoalNear(closestItem.position.x, closestItem.position.y, closestItem.position.z, COLLECTDISTANCE)).then(() => {
         this.stopped = true
     }).catch(() => {
-        this.stopped = true
+        this.fail(bot, "walking to item failed")
     })
   }
 

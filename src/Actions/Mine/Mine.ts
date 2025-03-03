@@ -22,27 +22,26 @@ export class Mine extends Action {
         const mineBlock = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE });
         if (!mineBlock) {
             // explore world
-            this.stopped = true
+            this.fail(bot, "no block found")
             return
         }
 
         bot.bot.pathfinder.goto(new goals.GoalNear(mineBlock.position.x, mineBlock.position.y, mineBlock.position.z, REACHDISTANCE)).then(() => {
             if (!bot.bot.canDigBlock(mineBlock)) {
-                bot.bot.chat("Not able to dig block " + mineBlock.name + " at " + mineBlock.position.toString())
-                this.stopped = true
+                this.fail(bot, "can't dig block")
             }
             //TODO: select proper tool
             bot.bot.dig(mineBlock, false)
-                .then(() => this.stopped = true)
+                .then(() => this.stopped = true)//success
                 .catch(() => { // important to catch promise-errors
-                    this.stopped = true
-                    bot.bot.chat("Digging failed for block " + mineBlock.name + " at " + mineBlock.position.toString())
+                    this.fail(bot, "digging failed")
                 });
         }).catch(() => {
-            this.stopped = true
+            this.fail(bot, "walking to block failed")
         })
     }
     abortAction(bot: mineflayer.Bot): void {
+        bot.pathfinder.stop();
         bot.stopDigging(); //throws error
     }
 }
