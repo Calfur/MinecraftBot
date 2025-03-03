@@ -32,7 +32,9 @@ export class Mine extends Action {
             }
             //TODO: select proper tool
             bot.bot.dig(mineBlock, false)
-                .then(() => this.stopped = true)//success
+                .then(() => {
+                    this.success(bot)
+                })//success
                 .catch(() => { // important to catch promise-errors
                     this.fail(bot, "digging failed")
                 });

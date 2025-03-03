@@ -16,16 +16,19 @@ export default class Craft extends Action { //currently designed to only run it 
         this.recipe = recipe
     }
     run(bot: Bot): void {
-        this.stopped = true //won't take more than 1 tick anyways
         if (this.recipe.requiresTable) {
             const crafting_table = bot.bot.findBlock({ matching: bot.bot.registry.blocksByName["crafting_table"].id, maxDistance: REACHDISTANCE })
             if (!crafting_table) return
             bot.bot.craft(this.recipe,1, crafting_table).catch(() => {
                 this.fail(bot, "failed to craft")
+            }).then(() => {
+                this.success(bot)
             })
         } else {
             bot.bot.craft(this.recipe,1).catch(() => {
                 this.fail(bot, "failed to craft")
+            }).then(() => {
+                this.success(bot)
             })
         }
     }

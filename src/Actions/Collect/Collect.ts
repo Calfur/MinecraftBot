@@ -20,13 +20,12 @@ export default class Collect extends Action {
   run(bot: Bot): void {
     const closestItem = this.getClosestItem(bot.bot);
     if (!closestItem) {
-      this.stopped = true
-      bot.bot.chat('No items found ' + this.item)
+      this.fail(bot, "item not found")
       return
     } 
 
     bot.bot.pathfinder.goto(new goals.GoalNear(closestItem.position.x, closestItem.position.y, closestItem.position.z, COLLECTDISTANCE)).then(() => {
-        this.stopped = true
+        this.success(bot)
     }).catch(() => {
         this.fail(bot, "walking to item failed")
     })

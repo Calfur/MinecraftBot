@@ -31,7 +31,12 @@ export default abstract class Action {
 
     protected fail(bot: Bot, reason: string): void {
         this.stopped = true
-        bot.emit("actionFailed", this.id, reason)
+        bot.emit("event", this.id, reason)
+    }
+
+    protected success(bot: Bot): void {
+        this.stopped = true
+        bot.emit("event", this.id, "finished successfully")
     }
 
     toJSON(): any {

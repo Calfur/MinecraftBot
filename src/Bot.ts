@@ -42,6 +42,13 @@ export default class Bot extends EventEmitter {
     this.bot.once('end', () => {
       this.emit('end');
     });
+
+    this.bot.on('kicked', () => {
+      if(!this.active) return
+      this.bot.connect({
+        username: name
+      });
+    });
   }
 
   calcTick() {
@@ -77,6 +84,4 @@ export default class Bot extends EventEmitter {
 
     // console.time("mineflayer"); //max registered time: 4ms
   }
-
-
 }
