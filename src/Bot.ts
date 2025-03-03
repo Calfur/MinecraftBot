@@ -3,12 +3,12 @@ import { pathfinder } from "mineflayer-pathfinder";
 import Action from "./Actions/Action";
 import TpsScoreboard from "./TpsScoreboard";
 import BestAction from "./Factors/BestAction";
-import MCFactor from "./Factors/MCFactor";
+import Factor from "./Factors/Factor";
 import FactorCache from "./Factors/FactorCache";
 
 export default class Bot {
   bot: mineflayer.Bot;
-  neededActions: MCFactor<Action[]>[] = []; //Factors providing actions which should be done
+  neededActions: Factor<Action[]>[] = []; //Factors providing actions which should be done
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
   cache: FactorCache = new FactorCache();

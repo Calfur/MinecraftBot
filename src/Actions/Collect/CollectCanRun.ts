@@ -1,15 +1,15 @@
 import Bot from "../../Bot";
-import MCFactor from "../../Factors/MCFactor";
+import Factor from "../../Factors/Factor";
 import ClosestItemDrop from "./ClosestItemDrop";
 
-export default class CollectCanRun extends MCFactor<boolean> {
+export default class CollectCanRun extends Factor<boolean> {
     item: string
     constructor(item: string) {
         super("CollectCanRun"+item);
         this.item = item
     }
 
-    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): boolean {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): boolean {
         return get(new ClosestItemDrop(this.item)) !== null
     }
 }

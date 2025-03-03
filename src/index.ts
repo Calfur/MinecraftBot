@@ -1,13 +1,13 @@
 import Action from "./Actions/Action";
 import Bot from "./Bot";
 import ActionsToOwnItem from "./Factors/Items/ActionsToOwnItem";
-import MCFactor from "./Factors/MCFactor";
+import Factor from "./Factors/Factor";
 
 
 const steve = new Bot("Steve");
 
 steve.bot.once('spawn', () => {
-    const initialTargets: MCFactor<Action[]>[] = [
+    const initialTargets: Factor<Action[]>[] = [
       // new ActionsToOwnItem('stick', 5),
       new ActionsToOwnItem('oak_planks', 1),
     ];

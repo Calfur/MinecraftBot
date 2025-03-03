@@ -3,11 +3,11 @@ import Collect from "../../Actions/Collect/Collect";
 import Craft from "../../Actions/Craft/Craft";
 import { Mine } from "../../Actions/Mine/Mine";
 import Bot from "../../Bot";
-import MCFactor from "../MCFactor";
+import Factor from "../Factor";
 import mineflayer from "mineflayer";
 import ItemCount from "./ItemCount";
 
-export default class ActionsToOwnItem extends MCFactor<Action[]>{
+export default class ActionsToOwnItem extends Factor<Action[]>{
     private item: string
     private count: number
 
@@ -17,7 +17,7 @@ export default class ActionsToOwnItem extends MCFactor<Action[]>{
         this.count = count
     }
 
-    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): Action[] {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): Action[] {
         // TODO keep path to avoid infinite loop (probably needs to be part of id, maybe more seperation possible) //issue if 2 goals have opposit paths
         const remainingCount = this.count - get(new ItemCount(this.item));
 

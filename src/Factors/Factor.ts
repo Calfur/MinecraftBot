@@ -1,39 +1,37 @@
+import Bot from "../Bot";
 import FactorCache from "./FactorCache";
 
-export default abstract class Factor<T, Data> {
+export default abstract class Factor<T> {
     id: string
-    cache: FactorCache | null = null // temporary storage of cache during calculation
-    data: Data | null = null
+    bot: Bot | null = null
     //TODO maybe add some libs like items/blocks/recipes here for easier use
 
     constructor(id: string) {
         this.id = id;
     }
 
-    private getFactor<U>(factor: Factor<U, Data>): U {
-        if (!this.cache) throw new Error("No cache defined");
-        if (!this.data) throw new Error("No data defined");
+    private getFactor<U>(factor: Factor<U>): U {
+        if (!this.bot) throw new Error("No Bot defined");
 
-        if (!this.cache.dependents[factor.id]) {
-            this.cache.dependents[factor.id] = new Set();
+        if (!this.bot.cache.dependents[factor.id]) {
+            this.bot.cache.dependents[factor.id] = new Set();
         }
-        this.cache.dependents[factor.id].add(this.id); // register this factor as dependent
+        this.bot.cache.dependents[factor.id].add(this.id); // register this factor as dependent
 
-        if (!this.cache.dependencies[this.id]) {
-            this.cache.dependencies[this.id] = new Set();
+        if (!this.bot.cache.dependencies[this.id]) {
+            this.bot.cache.dependencies[this.id] = new Set();
         }
-        this.cache.dependencies[this.id].add(factor.id); //store which factors this factor depends on
+        this.bot.cache.dependencies[this.id].add(factor.id); //store which factors this factor depends on
 
-        return factor.getValue(this.cache, this.data);
+        return factor.getValue(this.bot.cache, this.bot);
     }
 
-    getValue(cache: FactorCache, data: Data): T {
-        return cache.cache[this.id]?.value ?? this.recalc(cache, data);
+    getValue(cache: FactorCache, Bot: Bot): T {
+        return cache.cache[this.id]?.value ?? this.recalc(cache, Bot);
     }
 
-    recalc(cache: FactorCache, data: Data): T {
-        this.cache = cache;
-        this.data = data;
+    recalc(cache: FactorCache, Bot: Bot): T {
+        this.bot = Bot;
 
         // clear dependencies
         if(cache.dependencies[this.id]){
@@ -45,12 +43,10 @@ export default abstract class Factor<T, Data> {
         cache.dependencies[this.id] = new Set();
 
         // calc Value
-        const value = this.calc(this.data, this.getFactor.bind(this));
+        const value = this.calc(this.bot, this.getFactor.bind(this));
         cache.cache[this.id] = {value: value, factor: this};
-
-        this.cache = null;
         return value;
     }
 
-    protected abstract calc(data: Data, get: (factor: Factor<any, Data>) => any): T
+    protected abstract calc(Bot: Bot, get: (factor: Factor<T>) => T): T
 }

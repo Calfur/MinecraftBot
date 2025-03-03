@@ -1,7 +1,7 @@
 import Bot from "../../Bot";
-import MCFactor from "../../Factors/MCFactor";
+import Factor from "../../Factors/Factor";
 
-export default class MineFutureEffort extends MCFactor<number> {
+export default class MineFutureEffort extends Factor<number> {
     block: string
     
     constructor(block: string) {
@@ -9,7 +9,7 @@ export default class MineFutureEffort extends MCFactor<number> {
         this.block = block;
     }
 
-    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): number {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {
         //TODO add Tools, Rarity and hardness
         return 200 //10 sec
     }

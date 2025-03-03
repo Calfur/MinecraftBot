@@ -1,13 +1,13 @@
 import Action from "../Actions/Action";
 import Bot from "../Bot";
-import MCFactor from "./MCFactor";
+import Factor from "./Factor";
 
-export default class BestAction extends MCFactor<Action|null> {
+export default class BestAction extends Factor<Action|null> {
     constructor() {
         super("bestAction");
     }
 
-    protected calc(bot: Bot, get: (factor: MCFactor<any>) => any): Action|null {
+    protected calc(bot: Bot, get: (factor: Factor<any>) => any): Action|null {
         //2. get startable actions (cached)
         var actions = []
         for (const action of bot.neededActions) {

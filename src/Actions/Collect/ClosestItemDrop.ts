@@ -1,8 +1,8 @@
 import Bot from "../../Bot";
-import MCFactor from "../../Factors/MCFactor";
+import Factor from "../../Factors/Factor";
 import {Entity} from "prismarine-entity";
 
-export default class ClosestItemDrop extends MCFactor<Entity | null> {
+export default class ClosestItemDrop extends Factor<Entity | null> {
     item: string
     constructor(item: string) {
         super("ClosestItemDrop" + item);
