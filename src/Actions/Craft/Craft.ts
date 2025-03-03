@@ -36,4 +36,11 @@ export default class Craft extends Action { //currently designed to only run it 
     abortAction(bot: mineflayer.Bot): void {
         return
     }
+
+    registerChanges(bot: Bot): void {
+        for (const item of this.recipe.delta) {
+            const itemName = bot.bot.registry.items[item.id].name
+            bot.cache.addChange(/ItemCount${itemName}/);
+        }
+    }
 }

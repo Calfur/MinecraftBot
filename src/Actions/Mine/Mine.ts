@@ -7,15 +7,14 @@ import MineCanRun from "./MineCanRun"
 import MineCurrentEffort from "./MineCurrentEffort"
 import MineFutureEffort from "./MineFutureEffort"
 import MineDependencies from "./MineDependencies"
+import { resolve } from "path"
 
 export class Mine extends Action {
     block: string
-    goal: string
     //TODO maybe allow mining multiple blocks in one Action or let it use multiple actions
-    constructor(block: string, goal: string) { //maybe change to Actual Block instance instead of string
+    constructor(block: string) { //maybe change to Actual Block instance instead of string
         super("Mine" + block, new MineCanRun(block), new MineCurrentEffort(block), new MineFutureEffort(block), new MineDependencies(block));
         this.block = block;
-        this.goal = goal;
     }
 
     run(bot: Bot): void {
@@ -34,16 +33,20 @@ export class Mine extends Action {
             bot.bot.dig(mineBlock, false)
                 .then(() => {
                     this.success(bot)
-                })//success
-                .catch(() => { // important to catch promise-errors
-                    this.fail(bot, "digging failed")
+                }).catch((reason: any) => { // important to catch promise-errors
+                    this.fail(bot, "digging failed " + reason)
                 });
-        }).catch(() => {
-            this.fail(bot, "walking to block failed")
+        }).catch((reason: any) => {
+            this.fail(bot, "walking to block failed " + reason)
         })
     }
-    abortAction(bot: mineflayer.Bot): void {
+
+    abortAction(bot: mineflayer.Bot) {
         bot.pathfinder.stop();
-        bot.stopDigging(); //throws error
+        bot.stopDigging();
+    }
+    
+    registerChanges(bot: Bot): void {
+        // bot.cache.addChange(/^ClosestBlock${block}/);
     }
 }

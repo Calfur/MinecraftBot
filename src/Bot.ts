@@ -51,7 +51,7 @@ export default class Bot extends EventEmitter {
     });
   }
 
-  calcTick() {
+  async calcTick() {
     // console.timeEnd("mineflayer");
     // console.time("other"); //max registered time: 0.1ms
 
@@ -70,9 +70,9 @@ export default class Bot extends EventEmitter {
       
     //5. check for relevant status changes
     if (this.cache.changes.size === 0) { //low priority
-      this.cache.addChange("ClosestItemDrop")//check for drops
-      this.cache.addChange("ClosestBlock")//check for blocks
-      this.cache.addChange("ItemCount")//check for items in inventory
+      this.cache.addChange(/^ClosestItemDrop/)//check for drops
+      this.cache.addChange(/^ClosestBlock/)//check for blocks
+      this.cache.addChange(/^temCount/)//check for items in inventory
     }
     // console.timeEnd("other");
 

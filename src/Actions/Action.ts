@@ -24,7 +24,7 @@ export default abstract class Action {
     // Stops the action if it's running
     protected abstract abortAction(bot: mineflayer.Bot): void 
 
-    stop(bot: mineflayer.Bot): void {
+    stop(bot: mineflayer.Bot) {
         this.abortAction(bot)
         this.stopped = true
     }
@@ -32,14 +32,18 @@ export default abstract class Action {
     protected fail(bot: Bot, reason: string): void {
         this.stopped = true
         bot.emit("event", this.id, reason)
+        this.registerChanges(bot)
     }
 
     protected success(bot: Bot): void {
         this.stopped = true
         bot.emit("event", this.id, "finished successfully")
+        this.registerChanges(bot)
     }
 
     toJSON(): any {
         return this.id
     }
+
+    abstract registerChanges(bot: Bot): void // factors which are related to the action which are likely changed
 }

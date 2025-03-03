@@ -3,12 +3,10 @@ import Factor from "../Factor";
 
 export default class ItemCount extends Factor<number> {
     item: string
-    count: number
 
-    constructor(item: string, count: number = 1) {
-        super("ItemCount:" + item + count);
+    constructor(item: string) {
+        super("ItemCount:" + item);
         this.item = item;
-        this.count = count
     }
 
     protected calc(bot: Bot, get: (factor: Factor<any>) => any): number {

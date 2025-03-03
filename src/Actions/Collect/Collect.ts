@@ -31,6 +31,10 @@ export default class Collect extends Action {
     })
   }
 
+  registerChanges(bot: Bot): void {
+    bot.cache.addChange(/ClosestItemDrop${this.item}/);
+  }
+
   abortAction(bot: mineflayer.Bot): void {
     bot.pathfinder.stop();
   }

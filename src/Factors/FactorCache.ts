@@ -26,7 +26,9 @@ export default class FactorCache {
         }
     }
     
-    addChange(startWith: string) {
-        Object.keys(this.cache).filter(factorId => factorId.startsWith(startWith)).forEach(factorId => this.changes.add(factorId));
+    addChange(regex: RegExp) {
+        for (const factorId of Object.keys(this.cache).filter(factorId => regex.test(factorId))) {
+            this.changes.add(factorId);
+        }
     }
 }
