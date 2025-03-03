@@ -28,4 +28,8 @@ export default abstract class Action {
         this.abortAction(bot)
         this.stopped = true
     }
+
+    toJSON(): any {
+        return this.id
+    }
 }

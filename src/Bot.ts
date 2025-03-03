@@ -5,6 +5,7 @@ import TpsScoreboard from "./TpsScoreboard";
 import BestAction from "./Factors/BestAction";
 import Factor from "./Factors/Factor";
 import FactorCache from "./Factors/FactorCache";
+import EventEmitter from "events";
 
 export default class Bot {
   bot: mineflayer.Bot;
@@ -12,6 +13,7 @@ export default class Bot {
   private currentAction?: Action | null;
   private tpsScoreboard?: TpsScoreboard;
   cache: FactorCache = new FactorCache();
+  events = new EventEmitter();
 
   constructor(name: string) {
     this.bot = createBot({
@@ -32,6 +34,10 @@ export default class Bot {
 
       this.tpsScoreboard = new TpsScoreboard(this.bot);
     });
+
+    this.bot.once('end', () => {
+      this.events.emit('end');
+    });
   }
 
   calcTick() {
@@ -42,6 +48,7 @@ export default class Bot {
 
     //1. check if bestAction changed
     const bestAction = new BestAction().getValue(this.cache, this);
+    if (bestAction === null) this.events.emit("finishedActions");
 
     if (bestAction?.id !== this.currentAction?.id) {
       this.currentAction?.stop(this.bot);

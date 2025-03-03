@@ -1,3 +1,4 @@
+import Bot from "../Bot";
 import Factor from "./Factor";
 
 export default class FactorCache {
@@ -6,7 +7,7 @@ export default class FactorCache {
     dependencies: { [key: string]: Set<string> } = {}; // Factors on which the Key Factor depends on (used to remove dependencies)
     changes: Set<string> = new Set<string>(); // Factors which need to be recalculated due to assumed changes
 
-    calcChanges(forMS: number, data: any) {
+    calcChanges(forMS: number, bot: Bot) {
         const startTime = Date.now();
         
         while (this.changes.size > 0 && Date.now() - startTime < forMS) {
@@ -16,7 +17,7 @@ export default class FactorCache {
             const factor = this.cache[factorId].factor;
             if (!factor) continue;
         
-            factor.recalc(this, data);
+            factor.recalc(this, bot);
         
             //TODO only change dependents if the value is diffrent
             if (this.dependents[factorId]){

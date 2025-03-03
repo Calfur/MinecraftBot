@@ -44,9 +44,14 @@ export default abstract class Factor<T> {
 
         // calc Value
         const value = this.calc(this.bot, this.getFactor.bind(this));
+        this.bot.events.emit("factorChanged", this.id, value);
         cache.cache[this.id] = {value: value, factor: this};
         return value;
     }
 
     protected abstract calc(Bot: Bot, get: (factor: Factor<T>) => T): T
+
+    toJSON(): any {
+        return this.id
+    }
 }
