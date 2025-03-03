@@ -4,9 +4,9 @@ import Factor from "./Factors/Factor";
 import BenchMark from "./Benchmark/Benchmark";
 
 
-const initialTargets: Factor<Action[]>[] = [
+const targets: Factor<Action[]>[] = [
   // new ActionsToOwnItem('stick', 5),
   new ActionsToOwnItem('oak_planks', 1),
 ];
     
-BenchMark(initialTargets);
+new BenchMark("test",targets).run();

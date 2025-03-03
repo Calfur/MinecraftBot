@@ -1,18 +1,26 @@
 import fs from 'fs';
 
-export class BotLog {
+export class BenchRun {
     factors: State[] = []
-    events: Event[] = []
+    state: Event[] = []
 
-    save() {
-        if (!fs.existsSync("log")){
-            fs.mkdirSync("log");
+    save(benchMarkName: string) {
+        const folder = "Benchmark/"+benchMarkName;
+        if (!fs.existsSync("Benchmark")){
+            fs.mkdirSync("Benchmark", {recursive: true});
         }
-        fs.writeFile("log/"+new Date().toISOString().replace(/:/g, "-")+".json", JSON.stringify(this), function(err: any) {
-            if (err) {
-                console.log(err);
+        if (!fs.existsSync(folder)){
+            fs.mkdirSync(folder, {recursive: true});
+        }
+        fs.writeFile(
+            folder + "/" + new Date().toISOString().replace(/:/g, "-") + ".json", 
+            JSON.stringify(this), 
+            function(err: any) {
+                if (err) {
+                    console.log(err);
+                }
             }
-        });
+        );
     }
 }
 
