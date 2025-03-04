@@ -7,12 +7,11 @@ import MineCanRun from "./MineCanRun"
 import MineCurrentEffort from "./MineCurrentEffort"
 import MineFutureEffort from "./MineFutureEffort"
 import MineDependencies from "./MineDependencies"
-import { resolve } from "path"
 
 export class Mine extends Action {
     block: string
-    //TODO maybe allow mining multiple blocks in one Action or let it use multiple actions
-    constructor(block: string) { //maybe change to Actual Block instance instead of string
+    
+    constructor(block: string) {
         super("Mine" + block, new MineCanRun(block), new MineCurrentEffort(block), new MineFutureEffort(block), new MineDependencies(block));
         this.block = block;
     }
@@ -24,29 +23,19 @@ export class Mine extends Action {
             this.fail(bot, "no block found")
             return
         }
-
-        bot.bot.pathfinder.goto(new goals.GoalNear(mineBlock.position.x, mineBlock.position.y, mineBlock.position.z, REACHDISTANCE)).then(() => {
-            if (!bot.bot.canDigBlock(mineBlock)) {
-                this.fail(bot, "can't dig block")
-            }
-            //TODO: select proper tool
-            bot.bot.dig(mineBlock, false)
-                .then(() => {
-                    this.success(bot)
-                }).catch((reason: any) => { // important to catch promise-errors
-                    this.fail(bot, "digging failed " + reason)
-                });
-        }).catch((reason: any) => {
-            this.fail(bot, "walking to block failed " + reason)
+        
+        bot.bot.collectBlock.collect([mineBlock], { ignoreNoPath: true }).then(() => {
+            this.success(bot)
+        }).catch(async (reason: any) => {
+            this.fail(bot, "collecting block failed " + reason)
         })
     }
 
     abortAction(bot: mineflayer.Bot) {
-        bot.pathfinder.stop();
-        bot.stopDigging();
+        bot.collectBlock.cancelTask()
     }
     
     registerChanges(bot: Bot): void {
-        // bot.cache.addChange(/^ClosestBlock${block}/);
+        bot.cache.addChange(/^ClosestBlock${block}/);
     }
 }

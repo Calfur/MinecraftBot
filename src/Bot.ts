@@ -6,6 +6,7 @@ import BestAction from "./Factors/BestAction";
 import Factor from "./Factors/Factor";
 import FactorCache from "./Factors/FactorCache";
 import EventEmitter from "events";
+import {plugin as collectBlock} from "mineflayer-collectblock";
 
 export default class Bot extends EventEmitter {
   bot: mineflayer.Bot;
@@ -23,7 +24,8 @@ export default class Bot extends EventEmitter {
       username: name,
     })
 
-    this.bot.loadPlugin(pathfinder)
+    this.bot.loadPlugin(pathfinder);
+    this.bot.loadPlugin(collectBlock);
 
     this.bot.on('spawn', async () => {
 
@@ -39,8 +41,13 @@ export default class Bot extends EventEmitter {
       this.tpsScoreboard = new TpsScoreboard(this.bot);
     });
 
-    this.bot.once('end', () => {
+    this.bot.on('end', (reason) => {
       this.emit('end');
+      this.emit('event', 'end:' + reason);
+    });
+
+    this.bot.on('error', (error: Error) => {
+      this.emit('event', "error:" + error);
     });
 
     this.bot.on('kicked', () => {
@@ -52,10 +59,7 @@ export default class Bot extends EventEmitter {
   }
 
   async calcTick() {
-    // console.timeEnd("mineflayer");
-    // console.time("other"); //max registered time: 0.1ms
-
-    if (this.currentAction?.stopped) this.currentAction = null;
+    if (!this.currentAction?.running) this.currentAction = null;
 
     //1. check if bestAction changed
     const bestAction = new BestAction().getValue(this.cache, this);
@@ -64,8 +68,8 @@ export default class Bot extends EventEmitter {
     if (bestAction?.id !== this.currentAction?.id) {
       this.currentAction?.stop(this.bot);
       this.currentAction = bestAction;
-      if (this.currentAction) this.currentAction.run(this);
-      this.bot.chat(`Running action: ${this.currentAction?.id}`);
+      if (this.currentAction) this.currentAction.runAction(this);
+      this.bot.chat(`Run action: ${this.currentAction?.id}`);
     }
       
     //5. check for relevant status changes
@@ -74,14 +78,8 @@ export default class Bot extends EventEmitter {
       this.cache.addChange(/^ClosestBlock/)//check for blocks
       this.cache.addChange(/^temCount/)//check for items in inventory
     }
-    // console.timeEnd("other");
 
     //6. do some cache network calculations
-
-    // console.time("calcChanges"); //often around 80ms for 32 range
     this.cache.calcChanges(10,this);
-    // console.timeEnd("calcChanges");
-
-    // console.time("mineflayer"); //max registered time: 4ms
   }
 }

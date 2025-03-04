@@ -33,7 +33,7 @@ export default class ActionsToOwnItem extends Factor<Action[]>{
 
         //could make DigBlock search for blocks dropping this item instead of specific block
         this.blockTypesToMine(bot.bot, this.item).forEach(block => { 
-            directActions.push(new Mine(block, this.item));
+            directActions.push(new Mine(block));
         });
 
         directActions.push(new Collect(this.item));

@@ -4,7 +4,7 @@ import Factor from "../Factors/Factor"
 
 export default abstract class Action {
     id: string
-    stopped = false
+    running = false
     canRun: Factor<boolean>
     currentEffort: Factor<number>
     FutureEffort: Factor<number>
@@ -19,24 +19,29 @@ export default abstract class Action {
     }
 
     // Executes the action
-    abstract run(bot: Bot): void;
+    protected abstract run(bot: Bot): void;
+
+    runAction(bot: Bot): void {
+        this.running = true
+        this.run(bot)
+    }
 
     // Stops the action if it's running
     protected abstract abortAction(bot: mineflayer.Bot): void 
 
     stop(bot: mineflayer.Bot) {
         this.abortAction(bot)
-        this.stopped = true
+        this.running = false
     }
 
     protected fail(bot: Bot, reason: string): void {
-        this.stopped = true
+        this.running = false
         bot.emit("event", this.id, reason)
         this.registerChanges(bot)
     }
 
     protected success(bot: Bot): void {
-        this.stopped = true
+        this.running = false
         bot.emit("event", this.id, "finished successfully")
         this.registerChanges(bot)
     }

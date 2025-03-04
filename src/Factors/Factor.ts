@@ -26,7 +26,7 @@ export default abstract class Factor<T> {
         return factor.getValue(this.bot.cache, this.bot);
     }
 
-    getValue(cache: FactorCache, Bot: Bot): T {
+    getValue(cache: FactorCache, Bot: Bot): T { //TODO try .valueOf() for auto conversion
         return cache.cache[this.id]?.value ?? this.recalc(cache, Bot);
     }
 
