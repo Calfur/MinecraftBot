@@ -32,7 +32,7 @@ export default class Collect extends Action {
   }
 
   registerChanges(bot: Bot): void {
-    bot.cache.addChange(/ClosestItemDrop${this.item}/);
+    bot.cache.addChangeRegEx(/ClosestItemDrop${this.item}/,1);
   }
 
   abortAction(bot: mineflayer.Bot): void {

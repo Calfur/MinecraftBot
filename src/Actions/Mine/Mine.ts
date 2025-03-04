@@ -36,8 +36,8 @@ export class Mine extends Action {
     
     registerChanges(bot: Bot): void {
         bot.bot.registry.blockLoot[this.block].drops.forEach(drop => {
-            bot.cache.addChange(/^ItemCount${drop.item}/);
+            bot.cache.addChangeRegEx(/^ItemCount${drop.item}/,1);
         })
-        bot.cache.addChange(/^ClosestBlock${block}/);
+        bot.cache.addChangeRegEx(/^ClosestBlock${block}/,1);
     }
 }

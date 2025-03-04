@@ -40,7 +40,7 @@ export default class Craft extends Action { //currently designed to only run it 
     registerChanges(bot: Bot): void {
         for (const item of this.recipe.delta) {
             const itemName = bot.bot.registry.items[item.id].name
-            bot.cache.addChange(/ItemCount${itemName}/);
+            bot.cache.addChangeRegEx(/ItemCount${itemName}/,1);
         }
     }
 }
