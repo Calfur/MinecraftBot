@@ -35,19 +35,19 @@ export default class BenchMark {
             steve.once('finishedActions', () => {
                 console.log(`Finished actions in ${Date.now() - startTime}ms`);
                 this.events.push(new Event(Date.now() - startTime, "end", "finished actions"));
-                this.save(this.name);
+                this.save();
             });
 
             steve.once('end', () => {
                 console.log(`cancelled at ${Date.now() - startTime}ms`);
                 this.events.push(new Event(Date.now() - startTime, "end", "cancelled"));
-                this.save(this.name);
+                this.save();
             });
         });
     }
 
-    save(benchmarkName: string): void {
-        const benchmarkFolder = `Benchmark/${benchmarkName}`;
+    save(): void {
+        const benchmarkFolder = `Benchmark/${this.name}`;
         const benchmarkFile = `${benchmarkFolder}/${new Date().toISOString().replace(/:/g, "-")}.json`;
 
         // Create the Benchmark folder if it doesn't exist
