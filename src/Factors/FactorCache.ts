@@ -7,14 +7,11 @@ export default class FactorCache {
     dependencies: { [key: string]: Set<string> } = {}; // Factors on which the Key Factor depends on (used to remove dependencies)
     changes: { factorId: string, weight: number }[] = [];; // Factors which need to be recalculated due to assumed changes
 
-    sortChanges() {
-        this.changes.sort((a, b) => b.weight - a.weight); // Sort by weight, highest first
-    }
-
     calcChanges(forMS: number, bot: Bot) {
         const startTime = Date.now();
         
         while (this.changes.length > 0 && Date.now() - startTime < forMS) {
+            this.changes.sort((a, b) => b.weight - a.weight); // Sort by weight, highest first
             const { factorId, weight } = this.changes.shift()!;
         
             const factor = this.cache[factorId].factor;
@@ -26,7 +23,6 @@ export default class FactorCache {
             if (this.dependents[factorId]){
                 this.dependents[factorId].forEach(dependent => this.addChange(dependent, weight)); // add dependents to changes
             }
-            this.sortChanges();
         }
     }
     
