@@ -1,12 +1,14 @@
+import fs from 'fs';
 import Action from "../Actions/Action";
 import Bot from "../Bot";
 import Factor from "../Factors/Factor";
-import { BenchRun, Event, State } from "./Log";
+import { Event, State } from "./LogTypes";
 
 export default class BenchMark {
     name
     targets: Factor<Action[]>[]
-    runs: BenchRun[] = []
+    factors: State[] = []
+    events: Event[] = []
 
     constructor(name: string, targets: Factor<Action[]>[]) {
         this.name = name;
@@ -19,31 +21,48 @@ export default class BenchMark {
         steve.bot.once('spawn', () => {
             steve.bot.chat('/clear ' + steve.bot.username);
             steve.neededActions.push(...this.targets);
-            const run: BenchRun = new BenchRun();
-
-            this.runs.push(run);
 
             const startTime = Date.now();
-        
+
             steve.on("factorChanged", (id: string, value: any) => {
-                run.factors.push(new State(Date.now() - startTime, id, value));
+                this.factors.push(new State(Date.now() - startTime, id, value));
             })
             
             steve.on("event", (id: string, reason: string) => {
-                run.state.push(new Event(Date.now() - startTime, id, reason))
+                this.events.push(new Event(Date.now() - startTime, id, reason))
             })
 
             steve.once('finishedActions', () => {
                 console.log(`Finished actions in ${Date.now() - startTime}ms`);
-                run.state.push(new Event(Date.now() - startTime, "end", "finished actions"));
-                run.save(this.name);
+                this.events.push(new Event(Date.now() - startTime, "end", "finished actions"));
+                this.save(this.name);
             });
 
             steve.once('end', () => {
                 console.log(`cancelled at ${Date.now() - startTime}ms`);
-                run.state.push(new Event(Date.now() - startTime, "end", "cancelled"));
-                run.save(this.name);
+                this.events.push(new Event(Date.now() - startTime, "end", "cancelled"));
+                this.save(this.name);
             });
+        });
+    }
+
+    save(benchmarkName: string): void {
+        const benchmarkFolder = `Benchmark/${benchmarkName}`;
+        const benchmarkFile = `${benchmarkFolder}/${new Date().toISOString().replace(/:/g, "-")}.json`;
+
+        // Create the Benchmark folder if it doesn't exist
+        if (!fs.existsSync("Benchmark")) {
+            fs.mkdirSync("Benchmark", { recursive: true });
+        }
+
+        // Create the benchmark folder if it doesn't exist
+        if (!fs.existsSync(benchmarkFolder)) {
+            fs.mkdirSync(benchmarkFolder, { recursive: true });
+        }
+
+        // Write the benchmark results to a file
+        fs.writeFile(benchmarkFile, JSON.stringify(this), () => {
+            console.log(`Benchmark results saved to ${benchmarkFile}`);
         });
     }
 }

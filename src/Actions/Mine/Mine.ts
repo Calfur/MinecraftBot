@@ -1,8 +1,7 @@
 import Action from "../Action"
 import mineflayer from "mineflayer"
 import Bot from "../../Bot"
-import { REACHDISTANCE, SEARCHDISTANCE } from "../../Constants"
-import { goals } from "mineflayer-pathfinder"
+import { SEARCHDISTANCE } from "../../Constants"
 import MineCanRun from "./MineCanRun"
 import MineCurrentEffort from "./MineCurrentEffort"
 import MineFutureEffort from "./MineFutureEffort"
@@ -36,6 +35,9 @@ export class Mine extends Action {
     }
     
     registerChanges(bot: Bot): void {
+        bot.bot.registry.blockLoot[this.block].drops.forEach(drop => {
+            bot.cache.addChange(/^ItemCount${drop.item}/);
+        })
         bot.cache.addChange(/^ClosestBlock${block}/);
     }
 }
