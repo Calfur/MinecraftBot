@@ -35,12 +35,15 @@ export default class FactorCache {
     }
     
     addChange(factor: string, difference: number) {
+        if (!this.cache[factor]) return;
+
         difference = Math.min(difference, 1);
         const previous = this.changes.getById(factor);
+        
         if (previous) {
             this.changes.update(previous, {...previous, difference: previous.difference + (1-previous.difference) * difference});
         } else {
-            this.changes.insert({id: factor, difference, importance: 1});
+            this.changes.insert({id: factor, difference, importance: 1}); //default importance should be 0, but importance not yet assigned to factors
         }
     }
 

@@ -50,6 +50,6 @@ export default abstract class Action {
         return this.id
     }
 
-    abstract registerChanges(bot: Bot): void // factors which are related to the action which are likely changed
+    registerChanges(bot: Bot): void {}; // factors which are related to the action which are likely changed
     // maybe change to update factors on events
 }

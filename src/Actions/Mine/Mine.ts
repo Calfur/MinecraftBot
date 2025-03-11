@@ -23,7 +23,7 @@ export class Mine extends Action {
             return
         }
         
-        bot.bot.collectBlock.collect([mineBlock], { ignoreNoPath: true }).then(() => {
+        bot.bot.collectBlock.collect(mineBlock, { ignoreNoPath: true }).then(() => {
             this.success(bot)
         }).catch(async (reason: any) => {
             this.fail(bot, "collecting block failed " + reason)
@@ -37,6 +37,7 @@ export class Mine extends Action {
     registerChanges(bot: Bot): void {
         bot.bot.registry.blockLoot[this.block].drops.forEach(drop => {
             bot.cache.addChangeRegEx(new RegExp(`^ItemCount${drop.item}`),1);
+            bot.cache.addChangeRegEx(new RegExp(`^ClosestItemDrop${drop.item}`),1);
         })
         bot.cache.addChangeRegEx(new RegExp(`^ClosestBlock${this.block}`),1);
     }
