@@ -73,7 +73,7 @@ export default class Bot extends EventEmitter {
     }
       
     //5. check for relevant status changes
-    if (this.cache.changes.length === 0) { //low priority
+    if (this.cache.changes.length() === 0) { //low priority
       this.cache.addChangeRegEx(/^ClosestItemDrop/, 0.1)
       this.cache.addChangeRegEx(/^ClosestBlock/, 0.1)
       this.cache.addChangeRegEx(/^ItemCount/, 0.1)
