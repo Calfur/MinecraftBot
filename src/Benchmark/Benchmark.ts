@@ -3,7 +3,6 @@ import Action from "../Actions/Action";
 import Bot from "../Bot";
 import Factor from "../Factors/Factor";
 import { Event, State } from "./LogTypes";
-import { resolve } from 'path';
 
 export default class BenchMark {
     name
@@ -48,12 +47,12 @@ export default class BenchMark {
     }
 
     save(): void {
-        const benchmarkFolder = `Benchmark/${this.name}`;
+        const benchmarkFolder = `Log/${this.name}`;
         const benchmarkFile = `${benchmarkFolder}/${new Date().toISOString().replace(/:/g, "-")}.json`;
 
         // Create the Benchmark folder if it doesn't exist
-        if (!fs.existsSync("Benchmark")) {
-            fs.mkdirSync("Benchmark", { recursive: true });
+        if (!fs.existsSync("Log")) {
+            fs.mkdirSync("Log", { recursive: true });
         }
 
         // Create the benchmark folder if it doesn't exist
