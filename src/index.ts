@@ -9,4 +9,4 @@ const targets: Factor<Action[]>[] = [
   new ActionsToOwnItem('oak_planks', 1),
 ];
     
-new BenchMark("test",targets).run();
+new BenchMark("test",targets).run()

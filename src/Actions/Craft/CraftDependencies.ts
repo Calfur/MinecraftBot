@@ -1,6 +1,7 @@
 import Bot from "../../Bot";
 import Factor from "../../Factors/Factor";
 import ActionsToOwnItem from "../../Factors/Items/ActionsToOwnItem";
+import { recipeName } from "../../lib/utilities";
 import Action from "../Action";
 import {Recipe} from "prismarine-recipe";
 
@@ -8,7 +9,7 @@ export default class CraftDependencies extends Factor<Action[]> {
     recipe: Recipe
 
     constructor(recipe: Recipe) {
-        super("CraftDependencies" + recipe.delta.map(item => -item.count.toString() + "x" + item.id.toString()).join(","))
+        super("CraftDependencies" + recipeName(recipe))
         this.recipe = recipe
     }
 

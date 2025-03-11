@@ -1,12 +1,13 @@
 import { Recipe } from "prismarine-recipe";
 import Bot from "../../Bot";
 import Factor from "../../Factors/Factor";
+import { recipeName } from "../../lib/utilities";
 
 export default class CraftFutureEffort extends Factor<number> {
     recipe: Recipe
 
     constructor(recipe: Recipe) {
-        super("CraftFutureEffort" + recipe.delta.map(item => -item.count.toString() + "x" + item.id.toString()).join(","))
+        super("CraftFutureEffort" + recipeName(recipe))
         this.recipe = recipe
     }
 

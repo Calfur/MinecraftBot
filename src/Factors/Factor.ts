@@ -54,4 +54,8 @@ export default abstract class Factor<T> {
     toJSON(): any {
         return this.id
     }
+
+    calcTime(): number { // in ms
+        return 1; //maybe change to logging it and see how long it takes
+    }
 }

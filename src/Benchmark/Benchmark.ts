@@ -3,6 +3,7 @@ import Action from "../Actions/Action";
 import Bot from "../Bot";
 import Factor from "../Factors/Factor";
 import { Event, State } from "./LogTypes";
+import { resolve } from 'path';
 
 export default class BenchMark {
     name

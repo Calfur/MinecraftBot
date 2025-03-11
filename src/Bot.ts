@@ -7,6 +7,7 @@ import Factor from "./Factors/Factor";
 import FactorCache from "./Factors/FactorCache";
 import EventEmitter from "events";
 import {plugin as collectBlock} from "mineflayer-collectblock";
+import registerChanges from "./RegisterChanges";
 
 export default class Bot extends EventEmitter {
   bot: mineflayer.Bot;
@@ -56,6 +57,8 @@ export default class Bot extends EventEmitter {
         username: name
       });
     });
+
+    registerChanges(this.bot, this.cache);
   }
 
   async calcTick() {
@@ -80,6 +83,6 @@ export default class Bot extends EventEmitter {
     }
 
     //6. do some cache network calculations
-    this.cache.calcChanges(10,this);
+    this.cache.calcChanges(40,this); //TODO figure out how long it can take, based on current tick
   }
 }

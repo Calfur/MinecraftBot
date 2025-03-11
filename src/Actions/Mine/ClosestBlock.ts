@@ -1,3 +1,4 @@
+import { range } from "lodash";
 import Bot from "../../Bot";
 import { SEARCHDISTANCE } from "../../Constants";
 import Factor from "../../Factors/Factor";
@@ -14,5 +15,9 @@ export default class ClosestBlock extends Factor<Block|null> {
     protected calc(bot: Bot, get: (factor: Factor<any>) => any): Block|null {
         const block = bot.bot.findBlock({matching: bot.bot.registry.blocksByName[this.block].id, maxDistance: SEARCHDISTANCE});
         return block;
+    }
+
+    override calcTime(): number {
+        return SEARCHDISTANCE**2 / 10; //estimation
     }
 }

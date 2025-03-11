@@ -2,11 +2,12 @@ import Factor from "../../Factors/Factor";
 import {Recipe} from "prismarine-recipe";
 import ItemCount from "../../Factors/Items/ItemCount";
 import Bot from "../../Bot";
+import { recipeName } from "../../lib/utilities";
 
 export default class CraftCanRun extends Factor<boolean> {
     recipe: Recipe
     constructor(recipe: Recipe) {
-        super("CraftCanRun"+recipe.delta.map(item => -item.count.toString() + "x" + item.id.toString()).join(",")); //get name
+        super("CraftCanRun" + recipeName(recipe)); //get name
         this.recipe = recipe
     }
 
